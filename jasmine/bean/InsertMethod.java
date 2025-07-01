@@ -1,38 +1,31 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  bean.InsertMethod
- *  soot.SootMethod
- *  soot.Unit
- */
-package bean;
+package jasmine.bean;
+
+import soot.SootMethod;
 
 import java.util.List;
-import soot.SootMethod;
-import soot.Unit;
+
 
 public class InsertMethod {
     private SootMethod sootMethod;
-    private List<Unit> returnList;
-    private List<Unit> insertPointList;
-    private List<Unit> pjpList;
+    private List<Integer> returnList;
+    private List<Integer> insertPointList;
+    private List<Integer> pjpList;
 
     public InsertMethod() {
     }
 
-    public InsertMethod(SootMethod sootMethod, List<Unit> returnList) {
+    public InsertMethod(SootMethod sootMethod, List<Integer> returnList) {
         this.sootMethod = sootMethod;
         this.returnList = returnList;
     }
 
-    public InsertMethod(SootMethod sootMethod, List<Unit> returnList, List<Unit> insertPointList) {
+    public InsertMethod(SootMethod sootMethod, List<Integer> returnList, List<Integer> insertPointList) {
         this.sootMethod = sootMethod;
         this.returnList = returnList;
         this.insertPointList = insertPointList;
     }
 
-    public InsertMethod(SootMethod sootMethod, List<Unit> returnList, List<Unit> insertPointList, List<Unit> pjpList) {
+    public InsertMethod(SootMethod sootMethod, List<Integer> returnList, List<Integer> insertPointList, List<Integer> pjpList) {
         this.sootMethod = sootMethod;
         this.returnList = returnList;
         this.insertPointList = insertPointList;
@@ -40,39 +33,44 @@ public class InsertMethod {
     }
 
     public SootMethod getSootMethod() {
-        return this.sootMethod;
+        return sootMethod;
     }
 
     public void setSootMethod(SootMethod sootMethod) {
         this.sootMethod = sootMethod;
     }
 
-    public List<Unit> getReturnList() {
-        return this.returnList;
+    public List<Integer> getReturnList() {
+        return returnList;
     }
 
-    public void setReturnList(List<Unit> returnList) {
+    public void setReturnList(List<Integer> returnList) {
         this.returnList = returnList;
     }
 
-    public List<Unit> getInsertPointList() {
-        return this.insertPointList;
+    public List<Integer> getInsertPointList() {
+        return insertPointList;
     }
 
-    public void setInsertPointList(List<Unit> insertPointList) {
+    public void setInsertPointList(List<Integer> insertPointList) {
         this.insertPointList = insertPointList;
     }
 
-    public List<Unit> getPjpList() {
-        return this.pjpList;
+    public List<Integer> getPjpList() {
+        return pjpList;
     }
 
-    public void setPjpList(List<Unit> pjpList) {
+    public void setPjpList(List<Integer> pjpList) {
         this.pjpList = pjpList;
     }
 
+    @Override
     public String toString() {
-        return "InsertMethod{sootMethod=" + this.sootMethod + ", returnList=" + this.returnList + ", insertPointList=" + this.insertPointList + ", pjpList=" + this.pjpList + '}';
+        return "InsertMethod{" +
+                "sootMethod=" + sootMethod +
+                ", returnList=" + returnList +
+                ", insertPointList=" + insertPointList +
+                ", pjpList=" + pjpList +
+                '}';
     }
 }
-

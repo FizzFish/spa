@@ -1,27 +1,31 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  mock.MockObject
- *  soot.Local
- *  soot.SootClass
- *  soot.SootMethod
- *  soot.jimple.JimpleBody
- *  utils.BaseBodyGenerator
- */
-package mock;
+package jasmine.mock;
 
-import soot.Local;
-import soot.SootClass;
-import soot.SootMethod;
+import soot.*;
 import soot.jimple.JimpleBody;
-import utils.BaseBodyGenerator;
 
+/**
+ * @ClassName MockObject
+ * @Description Simulate the initialization behavior of the class
+ **/
 public interface MockObject {
-    public void mockJoinPoint(JimpleBody var1, BaseBodyGenerator var2);
+    /**
+     * Simulate the behavior of JoinPoint in the program
+     *
+     * @param body  the method body which contains to JoinPoint initialized
+     * @param units the method body which contains to JoinPoint initialized
+     */
+    void mockJoinPoint(JimpleBody body, PatchingChain<Unit> units);
 
-    public Local mockBean(JimpleBody var1, BaseBodyGenerator var2, SootClass var3, SootMethod var4);
+    /**
+     * Simulate the initialization of the entity class in the program
+     *
+     * @param body      the method body which contains to entity class initialized
+     * @param units     the method body which contains to entity class initialized
+     * @param sootClass controller class
+     * @param toCall    controller method
+     * @return Local variables of entity classes
+     */
+    Local mockBean(JimpleBody body, PatchingChain<Unit> units, SootClass sootClass, SootMethod toCall);
 
-    public Local mockHttpServlet(JimpleBody var1, BaseBodyGenerator var2, SootClass var3, SootMethod var4);
+    Local mockHttpServlet(JimpleBody body, PatchingChain<Unit> units, SootClass sootClass, SootMethod toCall);
 }
-

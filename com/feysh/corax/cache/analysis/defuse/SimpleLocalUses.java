@@ -38,13 +38,12 @@ import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
-public class SimpleLocalUses
-implements LocalUses {
+public class SimpleLocalUses implements LocalUses {
     private static final Logger logger = LoggerFactory.getLogger(SimpleLocalUses.class);
-    private final Map<Unit, List<UnitValueBoxPair>> unitToUses = new HashMap<Unit, List<UnitValueBoxPair>>();
+    private final Map<Unit, List<UnitValueBoxPair>> unitToUses = new HashMap<>();
 
     public SimpleLocalUses(UnitGraph graph, LocalDefs localDefs) {
-        this((Iterable<Unit>)graph.getBody().getUnits(), localDefs);
+        this(graph.getBody().getUnits(), localDefs);
     }
 
     public SimpleLocalUses(Iterable<Unit> units, LocalDefs localDefs) {
@@ -52,47 +51,51 @@ implements LocalUses {
         if (options.time()) {
             Timers.v().usesTimer.start();
         }
+
         for (Unit unit : units) {
             for (ValueBox useBox : unit.getUseBoxes()) {
-                Local l;
-                List defs;
                 Value v = useBox.getValue();
-                if (!(v instanceof Local) || (defs = localDefs.getDefsOfAt(l = (Local)v, unit)) == null) continue;
+                if (!(v instanceof Local)) {
+                    continue;
+                }
+
+                Local l = (Local) v;
+                List<Unit> defs = localDefs.getDefsOfAt(l, unit);
+                if (defs == null) {
+                    continue;
+                }
+
                 UnitValueBoxPair newPair = new UnitValueBoxPair(unit, useBox);
                 for (Unit def : defs) {
-                    List<UnitValueBoxPair> lst = this.unitToUses.get(def);
-                    if (lst == null) {
-                        lst = new ArrayList<UnitValueBoxPair>();
-                        this.unitToUses.put(def, lst);
-                    }
-                    lst.add(newPair);
+                    unitToUses.computeIfAbsent(def, k -> new ArrayList<>()).add(newPair);
                 }
             }
         }
+
         if (options.time()) {
             Timers.v().usesTimer.end();
         }
     }
 
+    @Override
     public List<UnitValueBoxPair> getUsesOf(Unit s) {
-        List<UnitValueBoxPair> l = this.unitToUses.get(s);
+        List<UnitValueBoxPair> l = unitToUses.get(s);
         return l == null ? Collections.emptyList() : Collections.unmodifiableList(l);
     }
 
     public Set<Local> getUsedVariables() {
-        HashSet<Local> res = new HashSet<Local>();
-        for (List<UnitValueBoxPair> vals : this.unitToUses.values()) {
+        Set<Local> res = new HashSet<>();
+        for (List<UnitValueBoxPair> vals : unitToUses.values()) {
             for (UnitValueBoxPair val : vals) {
-                res.add((Local)val.valueBox.getValue());
+                res.add((Local) val.valueBox.getValue());
             }
         }
         return res;
     }
 
     public Set<Local> getUnusedVariables(Collection<Local> locals) {
-        HashSet<Local> res = new HashSet<Local>(locals);
-        res.retainAll(this.getUsedVariables());
+        Set<Local> res = new HashSet<>(locals);
+        res.removeAll(getUsedVariables());
         return res;
     }
 }
-

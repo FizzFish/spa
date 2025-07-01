@@ -1,16 +1,12 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  utils.ConfigUtil
- */
-package utils;
+package jasmine.utils;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 
+/**
+ * @ClassName   ConfigUtil
+ * @Description read config
+ */
 public class ConfigUtil {
     public static Properties getProperties(String configPath) {
         Properties p = null;
@@ -18,14 +14,12 @@ public class ConfigUtil {
             return p;
         }
         try {
-            BufferedInputStream in = new BufferedInputStream(new FileInputStream(configPath));
+            InputStream in = new BufferedInputStream(new FileInputStream(configPath));
             p = new Properties();
             p.load(in);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return p;
     }
 }
-

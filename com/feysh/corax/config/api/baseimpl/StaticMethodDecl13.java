@@ -1,669 +1,271 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  kotlin.Metadata
- *  kotlin.Unit
- *  kotlin.jvm.functions.Function1
- *  kotlin.jvm.functions.Function14
- *  kotlin.jvm.internal.DefaultConstructorMarker
- *  kotlin.jvm.internal.Intrinsics
- *  kotlin.reflect.KClass
- *  kotlin.reflect.KProperty
- *  org.jetbrains.annotations.NotNull
- *  org.jetbrains.annotations.Nullable
- *  soot.SootField
- */
 package com.feysh.corax.config.api.baseimpl;
 
-import com.feysh.corax.config.api.AIAnalysisApi;
-import com.feysh.corax.config.api.BugMessage;
-import com.feysh.corax.config.api.CheckType;
-import com.feysh.corax.config.api.IAccessPathT;
-import com.feysh.corax.config.api.IAttribute;
-import com.feysh.corax.config.api.IBoolExpr;
-import com.feysh.corax.config.api.IClassField;
-import com.feysh.corax.config.api.IExpr;
-import com.feysh.corax.config.api.IIntExpr;
-import com.feysh.corax.config.api.ILocalT;
-import com.feysh.corax.config.api.ILocalValue;
-import com.feysh.corax.config.api.ILongExpr;
-import com.feysh.corax.config.api.IMethodMatch;
-import com.feysh.corax.config.api.IOperatorFactory;
-import com.feysh.corax.config.api.IParameterT;
-import com.feysh.corax.config.api.IReturnT;
-import com.feysh.corax.config.api.ISMethodDecl;
-import com.feysh.corax.config.api.ISMethodDecl13;
-import com.feysh.corax.config.api.ISootLocalVarDecl;
-import com.feysh.corax.config.api.IStmt;
-import com.feysh.corax.config.api.IStringExpr;
-import com.feysh.corax.config.api.ITaintType;
-import com.feysh.corax.config.api.ITypedExpr;
-import com.feysh.corax.config.api.IViaType;
-import com.feysh.corax.config.api.IWithSubFieldsT;
-import com.feysh.corax.config.api.MethodConfig;
-import com.feysh.corax.config.api.TaintProperty;
-import com.feysh.corax.config.api.ViaProperty;
+import com.feysh.corax.config.api.*;
 import com.feysh.corax.config.api.utils.KFunctionType;
-import java.util.Collection;
-import java.util.Set;
-import kotlin.Metadata;
-import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import kotlin.jvm.functions.Function14;
-import kotlin.jvm.internal.DefaultConstructorMarker;
-import kotlin.jvm.internal.Intrinsics;
-import kotlin.reflect.KClass;
-import kotlin.reflect.KProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import soot.SootField;
 
-@Metadata(mv={2, 0, 0}, k=1, xi=48, d1={"\u0000f\n\u0002\u0018\u0002\n\u0002\b\u000e\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0002\n\u0002\u0010\b\n\u0002\b\u0005\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0010\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0002\n\u0002\u0018\u0002\n\u0002\u0010\u0000\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0003\b\u0000\u0018\u0000*\u0004\b\u0000\u0010\u0001*\u0004\b\u0001\u0010\u0002*\u0004\b\u0002\u0010\u0003*\u0004\b\u0003\u0010\u0004*\u0004\b\u0004\u0010\u0005*\u0004\b\u0005\u0010\u0006*\u0004\b\u0006\u0010\u0007*\u0004\b\u0007\u0010\b*\u0004\b\b\u0010\t*\u0004\b\t\u0010\n*\u0004\b\n\u0010\u000b*\u0004\b\u000b\u0010\f*\u0004\b\f\u0010\r*\u0004\b\r\u0010\u000e2V\u0012\u0004\u0012\u0002H\u0001\u0012\u0004\u0012\u0002H\u0002\u0012\u0004\u0012\u0002H\u0003\u0012\u0004\u0012\u0002H\u0004\u0012\u0004\u0012\u0002H\u0005\u0012\u0004\u0012\u0002H\u0006\u0012\u0004\u0012\u0002H\u0007\u0012\u0004\u0012\u0002H\b\u0012\u0004\u0012\u0002H\t\u0012\u0004\u0012\u0002H\n\u0012\u0004\u0012\u0002H\u000b\u0012\u0004\u0012\u0002H\f\u0012\u0004\u0012\u0002H\r\u0012\u0004\u0012\u0002H\u000e0\u000f2\b\u0012\u0004\u0012\u0002H\u00010\u0010B\u001f\u0012\f\u0010\u0011\u001a\b\u0012\u0004\u0012\u00028\u00000\u0010\u0012\b\b\u0002\u0010\u0012\u001a\u00020\u0013\u00a2\u0006\u0004\b\u0014\u0010\u0015J}\u0010\u0018\u001aV\u0012\u0004\u0012\u00028\u0000\u0012\u0004\u0012\u00028\u0001\u0012\u0004\u0012\u00028\u0002\u0012\u0004\u0012\u00028\u0003\u0012\u0004\u0012\u00028\u0004\u0012\u0004\u0012\u00028\u0005\u0012\u0004\u0012\u00028\u0006\u0012\u0004\u0012\u00028\u0007\u0012\u0004\u0012\u00028\b\u0012\u0004\u0012\u00028\t\u0012\u0004\u0012\u00028\n\u0012\u0004\u0012\u00028\u000b\u0012\u0004\u0012\u00028\f\u0012\u0004\u0012\u00028\r0\u00192\u001f\u0010\u001a\u001a\u001b\u0012\b\u0012\u00060\u001cj\u0002`\u001d\u0012\u0004\u0012\u00020\u001e0\u001bj\u0002` \u00a2\u0006\u0002\b\u001fH\u0016J2\u0010!\u001a\u00020\u001e2'\u0010\"\u001a#\u0012\u0019\u0012\u0017\u0012\u0004\u0012\u00020$0#\u00a2\u0006\f\b%\u0012\b\b&\u0012\u0004\b\b('\u0012\u0004\u0012\u00020\u001e0\u001bH\u0096\u0001R\u0014\u0010\u0011\u001a\b\u0012\u0004\u0012\u00028\u00000\u0010X\u0082\u0004\u00a2\u0006\u0002\n\u0000R\u0014\u0010\u0012\u001a\u00020\u0013X\u0096\u0004\u00a2\u0006\b\n\u0000\u001a\u0004\b\u0016\u0010\u0017R\u0016\u0010(\u001a\u0004\u0018\u00010)8VX\u0096\u0005\u00a2\u0006\u0006\u001a\u0004\b*\u0010+R\u0012\u0010,\u001a\u00020-X\u0096\u0005\u00a2\u0006\u0006\u001a\u0004\b.\u0010/R\u0012\u00100\u001a\u000201X\u0096\u0005\u00a2\u0006\u0006\u001a\u0004\b2\u00103\u00a8\u00064"}, d2={"Lcom/feysh/corax/config/api/baseimpl/StaticMethodDecl13;", "R", "P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11", "P12", "Lcom/feysh/corax/config/api/ISMethodDecl13;", "Lcom/feysh/corax/config/api/ISMethodDecl;", "base", "argumentCnt", "", "<init>", "(Lcom/feysh/corax/config/api/ISMethodDecl;I)V", "getArgumentCnt", "()Ljava/lang/Integer;", "checkBuilder", "Lcom/feysh/corax/config/api/ISMethodDecl13$CheckBuilder;", "config", "Lkotlin/Function1;", "Lcom/feysh/corax/config/api/MethodConfig;", "Lcom/feysh/corax/config/api/MethodConfigType;", "", "Lkotlin/ExtensionFunctionType;", "Lcom/feysh/corax/config/api/MethodConfigBlockType;", "eachLocalVar", "block", "Lcom/feysh/corax/config/api/ISootLocalVarDecl;", "", "Lkotlin/ParameterName;", "name", "localVariable", "actualType", "Lcom/feysh/corax/config/api/utils/KFunctionType;", "getActualType", "()Lcom/feysh/corax/config/api/utils/KFunctionType;", "error", "Lcom/feysh/corax/config/api/AIAnalysisApi$Error;", "getError", "()Lcom/feysh/corax/config/api/AIAnalysisApi$Error;", "match", "Lcom/feysh/corax/config/api/IMethodMatch;", "getMatch", "()Lcom/feysh/corax/config/api/IMethodMatch;", "corax-config-api"})
+import java.util.Collection;
+import java.util.Set;
+
 public final class StaticMethodDecl13<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12>
-implements ISMethodDecl13<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12>,
-ISMethodDecl<R> {
+        implements ISMethodDecl13<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12>, ISMethodDecl<R> {
+
     @NotNull
     private final ISMethodDecl<R> base;
     private final int argumentCnt;
 
     public StaticMethodDecl13(@NotNull ISMethodDecl<R> base, int argumentCnt) {
-        Intrinsics.checkNotNullParameter(base, (String)"base");
+        if (base == null) {
+            throw new IllegalArgumentException("base cannot be null");
+        }
         this.base = base;
         this.argumentCnt = argumentCnt;
     }
 
-    public /* synthetic */ StaticMethodDecl13(ISMethodDecl iSMethodDecl, int n, int n2, DefaultConstructorMarker defaultConstructorMarker) {
-        if ((n2 & 2) != 0) {
-            n = 13;
-        }
-        this(iSMethodDecl, n);
+    public StaticMethodDecl13(@NotNull ISMethodDecl<R> base) {
+        this(base, 13);
     }
 
     @Override
     @NotNull
     public Integer getArgumentCnt() {
-        return this.argumentCnt;
+        return argumentCnt;
     }
 
     @Override
     @NotNull
     public ISMethodDecl13.CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12> checkBuilder(@NotNull Function1<? super MethodConfig, Unit> config) {
-        Intrinsics.checkNotNullParameter(config, (String)"config");
-        return new ISMethodDecl13.CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12>(this, config){
-            private final /* synthetic */ ISMethodDecl.CheckBuilder<R> $$delegate_0;
-            private final ISMethodDecl13<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12> method;
-            {
-                this.$$delegate_0 = StaticMethodDecl13.access$getBase$p($receiver).checkBuilder($config);
-                this.method = $receiver;
-            }
-
-            public ISMethodDecl13<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12> getMethod() {
-                return this.method;
-            }
-
-            public IParameterT<P0> getP0() {
-                return ISMethodDecl13.CheckBuilder.DefaultImpls.getP0(this);
-            }
-
-            public IParameterT<P1> getP1() {
-                return ISMethodDecl13.CheckBuilder.DefaultImpls.getP1(this);
-            }
-
-            public IParameterT<P2> getP2() {
-                return ISMethodDecl13.CheckBuilder.DefaultImpls.getP2(this);
-            }
-
-            public IParameterT<P3> getP3() {
-                return ISMethodDecl13.CheckBuilder.DefaultImpls.getP3(this);
-            }
-
-            public IParameterT<P4> getP4() {
-                return ISMethodDecl13.CheckBuilder.DefaultImpls.getP4(this);
-            }
-
-            public IParameterT<P5> getP5() {
-                return ISMethodDecl13.CheckBuilder.DefaultImpls.getP5(this);
-            }
-
-            public IParameterT<P6> getP6() {
-                return ISMethodDecl13.CheckBuilder.DefaultImpls.getP6(this);
-            }
-
-            public IParameterT<P7> getP7() {
-                return ISMethodDecl13.CheckBuilder.DefaultImpls.getP7(this);
-            }
-
-            public IParameterT<P8> getP8() {
-                return ISMethodDecl13.CheckBuilder.DefaultImpls.getP8(this);
-            }
-
-            public IParameterT<P9> getP9() {
-                return ISMethodDecl13.CheckBuilder.DefaultImpls.getP9(this);
-            }
-
-            public IParameterT<P10> getP10() {
-                return ISMethodDecl13.CheckBuilder.DefaultImpls.getP10(this);
-            }
-
-            public IParameterT<P11> getP11() {
-                return ISMethodDecl13.CheckBuilder.DefaultImpls.getP11(this);
-            }
-
-            public IParameterT<P12> getP12() {
-                return ISMethodDecl13.CheckBuilder.DefaultImpls.getP12(this);
-            }
-
-            public Function1<MethodConfig, Unit> getConfig() {
-                return this.$$delegate_0.getConfig();
-            }
-
-            public ILocalT<Object> getGlobal() {
-                return this.$$delegate_0.getGlobal();
-            }
-
-            public <T> IParameterT<T> paramAt(int index) {
-                return this.$$delegate_0.paramAt(index);
-            }
-
-            public IReturnT<R> getReturn() {
-                return this.$$delegate_0.getReturn();
-            }
-
-            public IWithSubFieldsT getSubFields(ILocalT<?> $this$subFields) {
-                Intrinsics.checkNotNullParameter($this$subFields, (String)"<this>");
-                return this.$$delegate_0.getSubFields($this$subFields);
-            }
-
-            public <T> IOperatorFactory.IAttributeGetSet getAttr(ILocalT<T> $this$attr) {
-                Intrinsics.checkNotNullParameter($this$attr, (String)"<this>");
-                return this.$$delegate_0.getAttr($this$attr);
-            }
-
-            public <T> IAttribute<TaintProperty, Set<ITaintType>> getTaint(ILocalT<T> $this$taint) {
-                Intrinsics.checkNotNullParameter($this$taint, (String)"<this>");
-                return this.$$delegate_0.getTaint($this$taint);
-            }
-
-            public <T> void setTaint(ILocalT<T> $this$taint, IAttribute<TaintProperty, Set<ITaintType>> iAttribute) {
-                Intrinsics.checkNotNullParameter($this$taint, (String)"<this>");
-                Intrinsics.checkNotNullParameter(iAttribute, (String)"<set-?>");
-                this.$$delegate_0.setTaint($this$taint, iAttribute);
-            }
-
-            public <T> IAttribute<ViaProperty, Set<IViaType>> getVia(ILocalT<T> $this$via) {
-                Intrinsics.checkNotNullParameter($this$via, (String)"<this>");
-                return this.$$delegate_0.getVia($this$via);
-            }
-
-            public <T> void setVia(ILocalT<T> $this$via, IAttribute<ViaProperty, Set<IViaType>> iAttribute) {
-                Intrinsics.checkNotNullParameter($this$via, (String)"<this>");
-                Intrinsics.checkNotNullParameter(iAttribute, (String)"<set-?>");
-                this.$$delegate_0.setVia($this$via, iAttribute);
-            }
-
-            public <T> ILocalValue<T> getValue(ILocalT<T> $this$value) {
-                Intrinsics.checkNotNullParameter($this$value, (String)"<this>");
-                return this.$$delegate_0.getValue($this$value);
-            }
-
-            public <T> void setValue(ILocalT<T> $this$value, ILocalValue<T> iLocalValue) {
-                Intrinsics.checkNotNullParameter($this$value, (String)"<this>");
-                Intrinsics.checkNotNullParameter(iLocalValue, (String)"<set-?>");
-                this.$$delegate_0.setValue($this$value, iLocalValue);
-            }
-
-            public IStringExpr literal(String string) {
-                Intrinsics.checkNotNullParameter((Object)string, (String)"string");
-                return this.$$delegate_0.literal(string);
-            }
-
-            public IIntExpr literal(int n) {
-                return this.$$delegate_0.literal(n);
-            }
-
-            public ILongExpr literal(long l) {
-                return this.$$delegate_0.literal(l);
-            }
-
-            public IBoolExpr literal(boolean bool) {
-                return this.$$delegate_0.literal(bool);
-            }
-
-            public <T> IBoolExpr isConstant(ILocalT<T> $this$isConstant) {
-                Intrinsics.checkNotNullParameter($this$isConstant, (String)"<this>");
-                return this.$$delegate_0.isConstant($this$isConstant);
-            }
-
-            public IBoolExpr isConstant(ITypedExpr $this$isConstant) {
-                Intrinsics.checkNotNullParameter((Object)$this$isConstant, (String)"<this>");
-                return this.$$delegate_0.isConstant($this$isConstant);
-            }
-
-            public IBoolExpr not(IBoolExpr $this$not) {
-                Intrinsics.checkNotNullParameter((Object)$this$not, (String)"<this>");
-                return this.$$delegate_0.not($this$not);
-            }
-
-            public IBoolExpr or(IBoolExpr $this$or, IBoolExpr other) {
-                Intrinsics.checkNotNullParameter((Object)$this$or, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)other, (String)"other");
-                return this.$$delegate_0.or($this$or, other);
-            }
-
-            public IIntExpr or(IIntExpr $this$or, IIntExpr rhs) {
-                Intrinsics.checkNotNullParameter((Object)$this$or, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)rhs, (String)"rhs");
-                return this.$$delegate_0.or($this$or, rhs);
-            }
-
-            public IBoolExpr and(IBoolExpr $this$and, IBoolExpr other) {
-                Intrinsics.checkNotNullParameter((Object)$this$and, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)other, (String)"other");
-                return this.$$delegate_0.and($this$and, other);
-            }
-
-            public IIntExpr and(IIntExpr $this$and, IIntExpr rhs) {
-                Intrinsics.checkNotNullParameter((Object)$this$and, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)rhs, (String)"rhs");
-                return this.$$delegate_0.and($this$and, rhs);
-            }
-
-            public IBoolExpr lt(IIntExpr $this$lt, IIntExpr rhs) {
-                Intrinsics.checkNotNullParameter((Object)$this$lt, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)rhs, (String)"rhs");
-                return this.$$delegate_0.lt($this$lt, rhs);
-            }
-
-            public IBoolExpr le(IIntExpr $this$le, IIntExpr rhs) {
-                Intrinsics.checkNotNullParameter((Object)$this$le, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)rhs, (String)"rhs");
-                return this.$$delegate_0.le($this$le, rhs);
-            }
-
-            public IBoolExpr eq(IIntExpr $this$eq, IIntExpr rhs) {
-                Intrinsics.checkNotNullParameter((Object)$this$eq, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)rhs, (String)"rhs");
-                return this.$$delegate_0.eq($this$eq, rhs);
-            }
-
-            public IBoolExpr ge(IIntExpr $this$ge, IIntExpr rhs) {
-                Intrinsics.checkNotNullParameter((Object)$this$ge, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)rhs, (String)"rhs");
-                return this.$$delegate_0.ge($this$ge, rhs);
-            }
-
-            public IBoolExpr gt(IIntExpr $this$gt, IIntExpr rhs) {
-                Intrinsics.checkNotNullParameter((Object)$this$gt, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)rhs, (String)"rhs");
-                return this.$$delegate_0.gt($this$gt, rhs);
-            }
-
-            public IBoolExpr neq(IIntExpr $this$neq, IIntExpr rhs) {
-                Intrinsics.checkNotNullParameter((Object)$this$neq, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)rhs, (String)"rhs");
-                return this.$$delegate_0.neq($this$neq, rhs);
-            }
-
-            public IIntExpr xor(IIntExpr $this$xor, IIntExpr rhs) {
-                Intrinsics.checkNotNullParameter((Object)$this$xor, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)rhs, (String)"rhs");
-                return this.$$delegate_0.xor($this$xor, rhs);
-            }
-
-            public IIntExpr shl(IIntExpr $this$shl, IIntExpr rhs) {
-                Intrinsics.checkNotNullParameter((Object)$this$shl, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)rhs, (String)"rhs");
-                return this.$$delegate_0.shl($this$shl, rhs);
-            }
-
-            public IIntExpr shr(IIntExpr $this$shr, IIntExpr rhs) {
-                Intrinsics.checkNotNullParameter((Object)$this$shr, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)rhs, (String)"rhs");
-                return this.$$delegate_0.shr($this$shr, rhs);
-            }
-
-            public IIntExpr lshr(IIntExpr $this$lshr, IIntExpr rhs) {
-                Intrinsics.checkNotNullParameter((Object)$this$lshr, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)rhs, (String)"rhs");
-                return this.$$delegate_0.lshr($this$lshr, rhs);
-            }
-
-            public IIntExpr plus(IIntExpr $this$plus, IIntExpr rhs) {
-                Intrinsics.checkNotNullParameter((Object)$this$plus, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)rhs, (String)"rhs");
-                return this.$$delegate_0.plus($this$plus, rhs);
-            }
-
-            public <T extends IClassField, V extends Set<? extends Object>> IAttribute<T, V> plus(IAttribute<T, V> $this$plus, IAttribute<T, V> set) {
-                Intrinsics.checkNotNullParameter($this$plus, (String)"<this>");
-                Intrinsics.checkNotNullParameter(set, (String)"set");
-                return this.$$delegate_0.plus($this$plus, set);
-            }
-
-            public IAttribute<TaintProperty, Set<ITaintType>> plus(IAttribute<TaintProperty, Set<ITaintType>> $this$plus, ITaintType single) {
-                Intrinsics.checkNotNullParameter($this$plus, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)single, (String)"single");
-                return this.$$delegate_0.plus($this$plus, single);
-            }
-
-            public IAttribute<ViaProperty, Set<IViaType>> plus(IAttribute<ViaProperty, Set<IViaType>> $this$plus, IViaType single) {
-                Intrinsics.checkNotNullParameter($this$plus, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)single, (String)"single");
-                return this.$$delegate_0.plus($this$plus, single);
-            }
-
-            public IIntExpr minus(IIntExpr $this$minus, IIntExpr rhs) {
-                Intrinsics.checkNotNullParameter((Object)$this$minus, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)rhs, (String)"rhs");
-                return this.$$delegate_0.minus($this$minus, rhs);
-            }
-
-            public <T extends IClassField, V extends Set<? extends Object>> IAttribute<T, V> minus(IAttribute<T, V> $this$minus, IAttribute<T, V> set) {
-                Intrinsics.checkNotNullParameter($this$minus, (String)"<this>");
-                Intrinsics.checkNotNullParameter(set, (String)"set");
-                return this.$$delegate_0.minus($this$minus, set);
-            }
-
-            public IAttribute<TaintProperty, Set<ITaintType>> minus(IAttribute<TaintProperty, Set<ITaintType>> $this$minus, ITaintType single) {
-                Intrinsics.checkNotNullParameter($this$minus, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)single, (String)"single");
-                return this.$$delegate_0.minus($this$minus, single);
-            }
-
-            public IAttribute<ViaProperty, Set<IViaType>> minus(IAttribute<ViaProperty, Set<IViaType>> $this$minus, IViaType single) {
-                Intrinsics.checkNotNullParameter($this$minus, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)single, (String)"single");
-                return this.$$delegate_0.minus($this$minus, single);
-            }
-
-            public <T> IBoolExpr getBoolean(ILocalT<T> $this$getBoolean) {
-                Intrinsics.checkNotNullParameter($this$getBoolean, (String)"<this>");
-                return this.$$delegate_0.getBoolean($this$getBoolean);
-            }
-
-            public <T> IStringExpr getString(ILocalT<T> $this$getString) {
-                Intrinsics.checkNotNullParameter($this$getString, (String)"<this>");
-                return this.$$delegate_0.getString($this$getString);
-            }
-
-            public <T> IIntExpr getInt(ILocalT<T> $this$getInt) {
-                Intrinsics.checkNotNullParameter($this$getInt, (String)"<this>");
-                return this.$$delegate_0.getInt($this$getInt);
-            }
-
-            public <T> ILongExpr getLong(ILocalT<T> $this$getLong) {
-                Intrinsics.checkNotNullParameter($this$getLong, (String)"<this>");
-                return this.$$delegate_0.getLong($this$getLong);
-            }
-
-            public <T> IStringExpr getEnumName(ILocalT<T> $this$getEnumName) {
-                Intrinsics.checkNotNullParameter($this$getEnumName, (String)"<this>");
-                return this.$$delegate_0.getEnumName($this$getEnumName);
-            }
-
-            public <T> IBoolExpr isInstanceOf(ILocalT<T> $this$isInstanceOf, String parentType) {
-                Intrinsics.checkNotNullParameter($this$isInstanceOf, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)parentType, (String)"parentType");
-                return this.$$delegate_0.isInstanceOf($this$isInstanceOf, parentType);
-            }
-
-            public IStringExpr toLowerCase(IStringExpr $this$toLowerCase) {
-                Intrinsics.checkNotNullParameter((Object)$this$toLowerCase, (String)"<this>");
-                return this.$$delegate_0.toLowerCase($this$toLowerCase);
-            }
-
-            public IBoolExpr startsWith(IStringExpr $this$startsWith, IStringExpr str) {
-                Intrinsics.checkNotNullParameter((Object)$this$startsWith, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)str, (String)"str");
-                return this.$$delegate_0.startsWith($this$startsWith, str);
-            }
-
-            public IBoolExpr startsWith(IStringExpr $this$startsWith, String str) {
-                Intrinsics.checkNotNullParameter((Object)$this$startsWith, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)str, (String)"str");
-                return this.$$delegate_0.startsWith($this$startsWith, str);
-            }
-
-            public IBoolExpr endsWith(IStringExpr $this$endsWith, IStringExpr str) {
-                Intrinsics.checkNotNullParameter((Object)$this$endsWith, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)str, (String)"str");
-                return this.$$delegate_0.endsWith($this$endsWith, str);
-            }
-
-            public IBoolExpr endsWith(IStringExpr $this$endsWith, String str) {
-                Intrinsics.checkNotNullParameter((Object)$this$endsWith, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)str, (String)"str");
-                return this.$$delegate_0.endsWith($this$endsWith, str);
-            }
-
-            public IBoolExpr contains(IStringExpr $this$contains, IStringExpr str) {
-                Intrinsics.checkNotNullParameter((Object)$this$contains, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)str, (String)"str");
-                return this.$$delegate_0.contains($this$contains, str);
-            }
-
-            public IBoolExpr contains(IStringExpr $this$contains, String str) {
-                Intrinsics.checkNotNullParameter((Object)$this$contains, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)str, (String)"str");
-                return this.$$delegate_0.contains($this$contains, str);
-            }
-
-            public IBoolExpr contains(IAttribute<TaintProperty, Set<ITaintType>> $this$contains, ITaintType taint) {
-                Intrinsics.checkNotNullParameter($this$contains, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)taint, (String)"taint");
-                return this.$$delegate_0.contains($this$contains, taint);
-            }
-
-            public IBoolExpr stringEquals(IStringExpr $this$stringEquals, IStringExpr str) {
-                Intrinsics.checkNotNullParameter((Object)$this$stringEquals, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)str, (String)"str");
-                return this.$$delegate_0.stringEquals($this$stringEquals, str);
-            }
-
-            public IBoolExpr stringEquals(IStringExpr $this$stringEquals, String str) {
-                Intrinsics.checkNotNullParameter((Object)$this$stringEquals, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)str, (String)"str");
-                return this.$$delegate_0.stringEquals($this$stringEquals, str);
-            }
-
-            public IAttribute<TaintProperty, Set<ITaintType>> taintOf(ITaintType ... type) {
-                Intrinsics.checkNotNullParameter((Object)type, (String)"type");
-                return this.$$delegate_0.taintOf(type);
-            }
-
-            public IAttribute<TaintProperty, Set<ITaintType>> taintOf(Collection<? extends ITaintType> types) {
-                Intrinsics.checkNotNullParameter(types, (String)"types");
-                return this.$$delegate_0.taintOf(types);
-            }
-
-            public IAttribute<ViaProperty, Set<IViaType>> viaOf(IViaType ... via) {
-                Intrinsics.checkNotNullParameter((Object)via, (String)"via");
-                return this.$$delegate_0.viaOf(via);
-            }
-
-            public IAttribute<TaintProperty, Set<ITaintType>> getEmptyTaint() {
-                return this.$$delegate_0.getEmptyTaint();
-            }
-
-            public IAttribute<ViaProperty, Set<IViaType>> getEmptyVia() {
-                return this.$$delegate_0.getEmptyVia();
-            }
-
-            public <T> ILocalValue<T> anyOf(ILocalT<T> ... local) {
-                Intrinsics.checkNotNullParameter(local, (String)"local");
-                return this.$$delegate_0.anyOf(local);
-            }
-
-            public <T> ILocalValue<T> null() {
-                return this.$$delegate_0.null();
-            }
-
-            public IBoolExpr hasIntersection(IAttribute<TaintProperty, Set<ITaintType>> $this$hasIntersection, IAttribute<TaintProperty, Set<ITaintType>> taint) {
-                Intrinsics.checkNotNullParameter($this$hasIntersection, (String)"<this>");
-                Intrinsics.checkNotNullParameter(taint, (String)"taint");
-                return this.$$delegate_0.hasIntersection($this$hasIntersection, taint);
-            }
-
-            public IBoolExpr containsAll(IAttribute<TaintProperty, Set<ITaintType>> $this$containsAll, ITaintType taint) {
-                Intrinsics.checkNotNullParameter($this$containsAll, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)taint, (String)"taint");
-                return this.$$delegate_0.containsAll($this$containsAll, taint);
-            }
-
-            public IBoolExpr containsAll(IAttribute<TaintProperty, Set<ITaintType>> $this$containsAll, IAttribute<TaintProperty, Set<ITaintType>> taint) {
-                Intrinsics.checkNotNullParameter($this$containsAll, (String)"<this>");
-                Intrinsics.checkNotNullParameter(taint, (String)"taint");
-                return this.$$delegate_0.containsAll($this$containsAll, taint);
-            }
-
-            public <T1 extends R, T2 extends R, R> ILocalValue<R> anyOr(ILocalValue<T1> $this$anyOr, ILocalValue<T2> second) {
-                Intrinsics.checkNotNullParameter($this$anyOr, (String)"<this>");
-                Intrinsics.checkNotNullParameter(second, (String)"second");
-                return this.$$delegate_0.anyOr($this$anyOr, second);
-            }
-
-            public <T1 extends R, T2 extends R, R> ILocalValue<R> anyOr(ILocalT<T1> $this$anyOr, ILocalT<T2> second) {
-                Intrinsics.checkNotNullParameter($this$anyOr, (String)"<this>");
-                Intrinsics.checkNotNullParameter(second, (String)"second");
-                return this.$$delegate_0.anyOr($this$anyOr, second);
-            }
-
-            public <T> IAccessPathT<Object> field(ILocalT<T> $this$field, String declaringClass, String fieldName, String fieldType) {
-                Intrinsics.checkNotNullParameter($this$field, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)fieldName, (String)"fieldName");
-                return this.$$delegate_0.field($this$field, declaringClass, fieldName, fieldType);
-            }
-
-            public <T> IAccessPathT<Object> field(ILocalT<T> $this$field, SootField field) {
-                Intrinsics.checkNotNullParameter($this$field, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)field, (String)"field");
-                return this.$$delegate_0.field($this$field, field);
-            }
-
-            public <T, FieldType> IAccessPathT<FieldType> field(ILocalT<T> $this$field, String declaringClass, String fieldName, KClass<FieldType> type) {
-                Intrinsics.checkNotNullParameter($this$field, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)fieldName, (String)"fieldName");
-                Intrinsics.checkNotNullParameter(type, (String)"type");
-                return this.$$delegate_0.field($this$field, declaringClass, fieldName, type);
-            }
-
-            public <T, FieldType> IAccessPathT<FieldType> field(ILocalT<T> $this$field, KClass<?> declaringClass, String fieldName, KClass<FieldType> type) {
-                Intrinsics.checkNotNullParameter($this$field, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)fieldName, (String)"fieldName");
-                Intrinsics.checkNotNullParameter(type, (String)"type");
-                return this.$$delegate_0.field($this$field, declaringClass, fieldName, type);
-            }
-
-            public <T> IAccessPathT<Object> field(ILocalT<T> $this$field, KClass<?> declaringClass, String fieldName, String fieldType) {
-                Intrinsics.checkNotNullParameter($this$field, (String)"<this>");
-                Intrinsics.checkNotNullParameter(declaringClass, (String)"declaringClass");
-                Intrinsics.checkNotNullParameter((Object)fieldName, (String)"fieldName");
-                return this.$$delegate_0.field($this$field, declaringClass, fieldName, fieldType);
-            }
-
-            public <T> IAccessPathT<Object> field(ILocalT<T> $this$field, IClassField field) {
-                Intrinsics.checkNotNullParameter($this$field, (String)"<this>");
-                Intrinsics.checkNotNullParameter((Object)field, (String)"field");
-                return this.$$delegate_0.field($this$field, field);
-            }
-
-            public <T, F> IAccessPathT<F> field(ILocalT<T> $this$field, KProperty<? extends F> field) {
-                Intrinsics.checkNotNullParameter($this$field, (String)"<this>");
-                Intrinsics.checkNotNullParameter(field, (String)"field");
-                return this.$$delegate_0.field($this$field, field);
-            }
-
-            public <T, FieldType> IAccessPathT<FieldType> field(ILocalT<T> $this$field, KProperty<?> field, KClass<FieldType> type) {
-                Intrinsics.checkNotNullParameter($this$field, (String)"<this>");
-                Intrinsics.checkNotNullParameter(field, (String)"field");
-                Intrinsics.checkNotNullParameter(type, (String)"type");
-                return this.$$delegate_0.field($this$field, field, type);
-            }
-
-            public void addStmt(IStmt stmt) {
-                Intrinsics.checkNotNullParameter((Object)stmt, (String)"stmt");
-                this.$$delegate_0.addStmt(stmt);
-            }
-
-            public void check(IBoolExpr expr, CheckType checkType, Function1<? super BugMessage.Env, Unit> env) {
-                Intrinsics.checkNotNullParameter((Object)expr, (String)"expr");
-                Intrinsics.checkNotNullParameter((Object)checkType, (String)"checkType");
-                Intrinsics.checkNotNullParameter(env, (String)"env");
-                this.$$delegate_0.check(expr, checkType, env);
-            }
-
-            public void check(ILocalT<Boolean> expr, CheckType checkType, Function1<? super BugMessage.Env, Unit> env) {
-                Intrinsics.checkNotNullParameter(expr, (String)"expr");
-                Intrinsics.checkNotNullParameter((Object)checkType, (String)"checkType");
-                Intrinsics.checkNotNullParameter(env, (String)"env");
-                this.$$delegate_0.check(expr, checkType, env);
-            }
-
-            public void eval(IExpr expr, Function1<Object, Unit> result) {
-                Intrinsics.checkNotNullParameter((Object)expr, (String)"expr");
-                Intrinsics.checkNotNullParameter(result, (String)"result");
-                this.$$delegate_0.eval(expr, result);
-            }
-
-            public void eval(IBoolExpr expr, Function1<? super Boolean, Unit> result) {
-                Intrinsics.checkNotNullParameter((Object)expr, (String)"expr");
-                Intrinsics.checkNotNullParameter(result, (String)"result");
-                this.$$delegate_0.eval(expr, result);
-            }
-
-            public void eval(IStringExpr expr, Function1<? super String, Unit> result) {
-                Intrinsics.checkNotNullParameter((Object)expr, (String)"expr");
-                Intrinsics.checkNotNullParameter(result, (String)"result");
-                this.$$delegate_0.eval(expr, result);
-            }
-
-            public void eval(IIntExpr expr, Function1<? super Integer, Unit> result) {
-                Intrinsics.checkNotNullParameter((Object)expr, (String)"expr");
-                Intrinsics.checkNotNullParameter(result, (String)"result");
-                this.$$delegate_0.eval(expr, result);
-            }
-        };
+        if (config == null) {
+            throw new IllegalArgumentException("config cannot be null");
+        }
+        return new CheckBuilderImpl(this, config);
     }
 
     @Override
     @NotNull
-    public ISMethodDecl13<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12> model(@NotNull Function1<? super MethodConfig, Unit> config, @NotNull Function14<? super ISMethodDecl13.CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12>, ? super IParameterT<P0>, ? super IParameterT<P1>, ? super IParameterT<P2>, ? super IParameterT<P3>, ? super IParameterT<P4>, ? super IParameterT<P5>, ? super IParameterT<P6>, ? super IParameterT<P7>, ? super IParameterT<P8>, ? super IParameterT<P9>, ? super IParameterT<P10>, ? super IParameterT<P11>, ? super IParameterT<P12>, Unit> block) {
-        return ISMethodDecl13.DefaultImpls.model(this, config, block);
+    public ISMethodDecl13<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12> model(
+            @NotNull Function1<? super MethodConfig, Unit> config,
+            @NotNull Function14<? super ISMethodDecl13.CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12>, 
+                    ? super IParameterT<P0>, ? super IParameterT<P1>, ? super IParameterT<P2>, ? super IParameterT<P3>, 
+                    ? super IParameterT<P4>, ? super IParameterT<P5>, ? super IParameterT<P6>, ? super IParameterT<P7>, 
+                    ? super IParameterT<P8>, ? super IParameterT<P9>, ? super IParameterT<P10>, ? super IParameterT<P11>, 
+                    ? super IParameterT<P12>, Unit> block) {
+        ISMethodDecl13.CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12> builder = checkBuilder(config);
+        block.invoke(builder, 
+                builder.getP0(), builder.getP1(), builder.getP2(), builder.getP3(), 
+                builder.getP4(), builder.getP5(), builder.getP6(), builder.getP7(), 
+                builder.getP8(), builder.getP9(), builder.getP10(), builder.getP11(), 
+                builder.getP12());
+        return this;
     }
 
     @Override
     @NotNull
-    public ISMethodDecl13<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12> modelNoArg(@NotNull Function1<? super MethodConfig, Unit> config, @NotNull Function1<? super ISMethodDecl13.CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12>, Unit> block) {
-        return ISMethodDecl13.DefaultImpls.modelNoArg(this, config, block);
+    public ISMethodDecl13<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12> modelNoArg(
+            @NotNull Function1<? super MethodConfig, Unit> config,
+            @NotNull Function1<? super ISMethodDecl13.CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12>, Unit> block) {
+        block.invoke(checkBuilder(config));
+        return this;
     }
 
     @Override
     @NotNull
     public IMethodMatch getMatch() {
-        return this.base.getMatch();
+        return base.getMatch();
     }
 
     @Override
     @NotNull
     public AIAnalysisApi.Error getError() {
-        return this.base.getError();
+        return base.getError();
     }
 
     @Override
     @Nullable
     public KFunctionType getActualType() {
-        return this.base.getActualType();
+        return base.getActualType();
     }
 
     @Override
     public void eachLocalVar(@NotNull Function1<? super ISootLocalVarDecl<Object>, Unit> block) {
-        Intrinsics.checkNotNullParameter(block, (String)"block");
-        this.base.eachLocalVar(block);
+        if (block == null) {
+            throw new IllegalArgumentException("block cannot be null");
+        }
+        base.eachLocalVar(block);
     }
 
-    public static final /* synthetic */ ISMethodDecl access$getBase$p(StaticMethodDecl13 $this) {
-        return $this.base;
+    private static class CheckBuilderImpl<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12> 
+            implements ISMethodDecl13.CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12> {
+
+        private final ISMethodDecl.CheckBuilder<R> delegate;
+        private final ISMethodDecl13<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12> method;
+
+        CheckBuilderImpl(StaticMethodDecl13<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12> method, 
+                        Function1<? super MethodConfig, Unit> config) {
+            this.delegate = method.base.checkBuilder(config);
+            this.method = method;
+        }
+
+        @Override
+        public ISMethodDecl13<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12> getMethod() {
+            return method;
+        }
+
+        @Override
+        public Function1<MethodConfig, Unit> getConfig() {
+            return delegate.getConfig();
+        }
+
+        @Override
+        public IParameterT<P0> getP0() {
+            return delegate.paramAt(0);
+        }
+
+        @Override
+        public IParameterT<P1> getP1() {
+            return delegate.paramAt(1);
+        }
+
+        @Override
+        public IParameterT<P2> getP2() {
+            return delegate.paramAt(2);
+        }
+
+        @Override
+        public IParameterT<P3> getP3() {
+            return delegate.paramAt(3);
+        }
+
+        @Override
+        public IParameterT<P4> getP4() {
+            return delegate.paramAt(4);
+        }
+
+        @Override
+        public IParameterT<P5> getP5() {
+            return delegate.paramAt(5);
+        }
+
+        @Override
+        public IParameterT<P6> getP6() {
+            return delegate.paramAt(6);
+        }
+
+        @Override
+        public IParameterT<P7> getP7() {
+            return delegate.paramAt(7);
+        }
+
+        @Override
+        public IParameterT<P8> getP8() {
+            return delegate.paramAt(8);
+        }
+
+        @Override
+        public IParameterT<P9> getP9() {
+            return delegate.paramAt(9);
+        }
+
+        @Override
+        public IParameterT<P10> getP10() {
+            return delegate.paramAt(10);
+        }
+
+        @Override
+        public IParameterT<P11> getP11() {
+            return delegate.paramAt(11);
+        }
+
+        @Override
+        public IParameterT<P12> getP12() {
+            return delegate.paramAt(12);
+        }
+
+        // Delegate all other methods to the underlying CheckBuilder
+        @Override public ILocalT<Object> getGlobal() { return delegate.getGlobal(); }
+        @Override public <T> IParameterT<T> paramAt(int index) { return delegate.paramAt(index); }
+        @Override public IReturnT<R> getReturn() { return delegate.getReturn(); }
+        @Override public IWithSubFieldsT getSubFields(ILocalT<?> localT) { return delegate.getSubFields(localT); }
+        @Override public <T> IOperatorFactory.IAttributeGetSet getAttr(ILocalT<T> localT) { return delegate.getAttr(localT); }
+        @Override public <T> IAttribute<TaintProperty, Set<ITaintType>> getTaint(ILocalT<T> localT) { return delegate.getTaint(localT); }
+        @Override public <T> void setTaint(ILocalT<T> localT, IAttribute<TaintProperty, Set<ITaintType>> attribute) { delegate.setTaint(localT, attribute); }
+        @Override public <T> IAttribute<ViaProperty, Set<IViaType>> getVia(ILocalT<T> localT) { return delegate.getVia(localT); }
+        @Override public <T> void setVia(ILocalT<T> localT, IAttribute<ViaProperty, Set<IViaType>> attribute) { delegate.setVia(localT, attribute); }
+        @Override public <T> ILocalValue<T> getValue(ILocalT<T> localT) { return delegate.getValue(localT); }
+        @Override public <T> void setValue(ILocalT<T> localT, ILocalValue<T> localValue) { delegate.setValue(localT, localValue); }
+        @Override public IStringExpr literal(String string) { return delegate.literal(string); }
+        @Override public IIntExpr literal(int n) { return delegate.literal(n); }
+        @Override public ILongExpr literal(long l) { return delegate.literal(l); }
+        @Override public IBoolExpr literal(boolean bool) { return delegate.literal(bool); }
+        @Override public <T> IBoolExpr isConstant(ILocalT<T> localT) { return delegate.isConstant(localT); }
+        @Override public IBoolExpr isConstant(ITypedExpr typedExpr) { return delegate.isConstant(typedExpr); }
+        @Override public IBoolExpr not(IBoolExpr boolExpr) { return delegate.not(boolExpr); }
+        @Override public IBoolExpr or(IBoolExpr boolExpr, IBoolExpr other) { return delegate.or(boolExpr, other); }
+        @Override public IIntExpr or(IIntExpr intExpr, IIntExpr rhs) { return delegate.or(intExpr, rhs); }
+        @Override public IBoolExpr and(IBoolExpr boolExpr, IBoolExpr other) { return delegate.and(boolExpr, other); }
+        @Override public IIntExpr and(IIntExpr intExpr, IIntExpr rhs) { return delegate.and(intExpr, rhs); }
+        @Override public IBoolExpr lt(IIntExpr intExpr, IIntExpr rhs) { return delegate.lt(intExpr, rhs); }
+        @Override public IBoolExpr le(IIntExpr intExpr, IIntExpr rhs) { return delegate.le(intExpr, rhs); }
+        @Override public IBoolExpr eq(IIntExpr intExpr, IIntExpr rhs) { return delegate.eq(intExpr, rhs); }
+        @Override public IBoolExpr ge(IIntExpr intExpr, IIntExpr rhs) { return delegate.ge(intExpr, rhs); }
+        @Override public IBoolExpr gt(IIntExpr intExpr, IIntExpr rhs) { return delegate.gt(intExpr, rhs); }
+        @Override public IBoolExpr neq(IIntExpr intExpr, IIntExpr rhs) { return delegate.neq(intExpr, rhs); }
+        @Override public IIntExpr xor(IIntExpr intExpr, IIntExpr rhs) { return delegate.xor(intExpr, rhs); }
+        @Override public IIntExpr shl(IIntExpr intExpr, IIntExpr rhs) { return delegate.shl(intExpr, rhs); }
+        @Override public IIntExpr shr(IIntExpr intExpr, IIntExpr rhs) { return delegate.shr(intExpr, rhs); }
+        @Override public IIntExpr lshr(IIntExpr intExpr, IIntExpr rhs) { return delegate.lshr(intExpr, rhs); }
+        @Override public IIntExpr plus(IIntExpr intExpr, IIntExpr rhs) { return delegate.plus(intExpr, rhs); }
+        @Override public <T extends IClassField, V extends Set<?>> IAttribute<T, V> plus(IAttribute<T, V> attribute, IAttribute<T, V> set) { return delegate.plus(attribute, set); }
+        @Override public IAttribute<TaintProperty, Set<ITaintType>> plus(IAttribute<TaintProperty, Set<ITaintType>> attribute, ITaintType single) { return delegate.plus(attribute, single); }
+        @Override public IAttribute<ViaProperty, Set<IViaType>> plus(IAttribute<ViaProperty, Set<IViaType>> attribute, IViaType single) { return delegate.plus(attribute, single); }
+        @Override public IIntExpr minus(IIntExpr intExpr, IIntExpr rhs) { return delegate.minus(intExpr, rhs); }
+        @Override public <T extends IClassField, V extends Set<?>> IAttribute<T, V> minus(IAttribute<T, V> attribute, IAttribute<T, V> set) { return delegate.minus(attribute, set); }
+        @Override public IAttribute<TaintProperty, Set<ITaintType>> minus(IAttribute<TaintProperty, Set<ITaintType>> attribute, ITaintType single) { return delegate.minus(attribute, single); }
+        @Override public IAttribute<ViaProperty, Set<IViaType>> minus(IAttribute<ViaProperty, Set<IViaType>> attribute, IViaType single) { return delegate.minus(attribute, single); }
+        @Override public <T> IBoolExpr getBoolean(ILocalT<T> localT) { return delegate.getBoolean(localT); }
+        @Override public <T> IStringExpr getString(ILocalT<T> localT) { return delegate.getString(localT); }
+        @Override public <T> IIntExpr getInt(ILocalT<T> localT) { return delegate.getInt(localT); }
+        @Override public <T> ILongExpr getLong(ILocalT<T> localT) { return delegate.getLong(localT); }
+        @Override public <T> IStringExpr getEnumName(ILocalT<T> localT) { return delegate.getEnumName(localT); }
+        @Override public <T> IBoolExpr isInstanceOf(ILocalT<T> localT, String parentType) { return delegate.isInstanceOf(localT, parentType); }
+        @Override public IStringExpr toLowerCase(IStringExpr stringExpr) { return delegate.toLowerCase(stringExpr); }
+        @Override public IBoolExpr startsWith(IStringExpr stringExpr, IStringExpr str) { return delegate.startsWith(stringExpr, str); }
+        @Override public IBoolExpr startsWith(IStringExpr stringExpr, String str) { return delegate.startsWith(stringExpr, str); }
+        @Override public IBoolExpr endsWith(IStringExpr stringExpr, IStringExpr str) { return delegate.endsWith(stringExpr, str); }
+        @Override public IBoolExpr endsWith(IStringExpr stringExpr, String str) { return delegate.endsWith(stringExpr, str); }
+        @Override public IBoolExpr contains(IStringExpr stringExpr, IStringExpr str) { return delegate.contains(stringExpr, str); }
+        @Override public IBoolExpr contains(IStringExpr stringExpr, String str) { return delegate.contains(stringExpr, str); }
+        @Override public IBoolExpr contains(IAttribute<TaintProperty, Set<ITaintType>> attribute, ITaintType taint) { return delegate.contains(attribute, taint); }
+        @Override public IBoolExpr stringEquals(IStringExpr stringExpr, IStringExpr str) { return delegate.stringEquals(stringExpr, str); }
+        @Override public IBoolExpr stringEquals(IStringExpr stringExpr, String str) { return delegate.stringEquals(stringExpr, str); }
+        @Override public IAttribute<TaintProperty, Set<ITaintType>> taintOf(ITaintType... type) { return delegate.taintOf(type); }
+        @Override public IAttribute<TaintProperty, Set<ITaintType>> taintOf(Collection<? extends ITaintType> types) { return delegate.taintOf(types); }
+        @Override public IAttribute<ViaProperty, Set<IViaType>> viaOf(IViaType... via) { return delegate.viaOf(via); }
+        @Override public IAttribute<TaintProperty, Set<ITaintType>> getEmptyTaint() { return delegate.getEmptyTaint(); }
+        @Override public IAttribute<ViaProperty, Set<IViaType>> getEmptyVia() { return delegate.getEmptyVia(); }
+        @Override public <T> ILocalValue<T> anyOf(ILocalT<T>... local) { return delegate.anyOf(local); }
+        @Override public <T> ILocalValue<T> nullValue() { return delegate.nullValue(); }
+        @Override public IBoolExpr hasIntersection(IAttribute<TaintProperty, Set<ITaintType>> attribute, IAttribute<TaintProperty, Set<ITaintType>> taint) { return delegate.hasIntersection(attribute, taint); }
+        @Override public IBoolExpr containsAll(IAttribute<TaintProperty, Set<ITaintType>> attribute, ITaintType taint) { return delegate.containsAll(attribute, taint); }
+        @Override public IBoolExpr containsAll(IAttribute<TaintProperty, Set<ITaintType>> attribute, IAttribute<TaintProperty, Set<ITaintType>> taint) { return delegate.containsAll(attribute, taint); }
+        @Override public <T1 extends R, T2 extends R, R1> ILocalValue<R1> anyOr(ILocalValue<T1> localValue, ILocalValue<T2> second) { return delegate.anyOr(localValue, second); }
+        @Override public <T1 extends R, T2 extends R, R1> ILocalValue<R1> anyOr(ILocalT<T1> localT, ILocalT<T2> second) { return delegate.anyOr(localT, second); }
+        @Override public <T> IAccessPathT<Object> field(ILocalT<T> localT, String declaringClass, String fieldName, String fieldType) { return delegate.field(localT, declaringClass, fieldName, fieldType); }
+        @Override public <T> IAccessPathT<Object> field(ILocalT<T> localT, SootField field) { return delegate.field(localT, field); }
+        @Override public <T, FieldType> IAccessPathT<FieldType> field(ILocalT<T> localT, String declaringClass, String fieldName, Class<FieldType> type) { return delegate.field(localT, declaringClass, fieldName, type); }
+        @Override public <T, FieldType> IAccessPathT<FieldType> field(ILocalT<T> localT, Class<?> declaringClass, String fieldName, Class<FieldType> type) { return delegate.field(localT, declaringClass, fieldName, type); }
+        @Override public <T> IAccessPathT<Object> field(ILocalT<T> localT, Class<?> declaringClass, String fieldName, String fieldType) { return delegate.field(localT, declaringClass, fieldName, fieldType); }
+        @Override public <T> IAccessPathT<Object> field(ILocalT<T> localT, IClassField field) { return delegate.field(localT, field); }
+        @Override public void addStmt(IStmt stmt) { delegate.addStmt(stmt); }
+        @Override public void check(IBoolExpr expr, CheckType checkType, Function1<? super BugMessage.Env, Unit> env) { delegate.check(expr, checkType, env); }
+        @Override public void check(ILocalT<Boolean> localT, CheckType checkType, Function1<? super BugMessage.Env, Unit> env) { delegate.check(localT, checkType, env); }
+        @Override public void eval(IExpr expr, Function1<Object, Unit> result) { delegate.eval(expr, result); }
+        @Override public void eval(IBoolExpr expr, Function1<? super Boolean, Unit> result) { delegate.eval(expr, result); }
+        @Override public void eval(IStringExpr expr, Function1<? super String, Unit> result) { delegate.eval(expr, result); }
+        @Override public void eval(IIntExpr expr, Function1<? super Integer, Unit> result) { delegate.eval(expr, result); }
     }
 }
-

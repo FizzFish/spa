@@ -1,17 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  kotlin.Metadata
- *  kotlin.Unit
- *  kotlin.jvm.functions.Function1
- *  kotlin.jvm.internal.Intrinsics
- *  kotlin.jvm.internal.SourceDebugExtension
- *  kotlin.reflect.KClass
- *  org.jetbrains.annotations.NotNull
- *  org.jetbrains.annotations.Nullable
- *  soot.SootField
- */
 package com.feysh.corax.config.api;
 
 import com.feysh.corax.config.api.BugMessage;
@@ -30,220 +16,130 @@ import com.feysh.corax.config.api.TaintProperty;
 import com.feysh.corax.config.api.ViaProperty;
 import com.feysh.corax.config.api.utils.KFunctionType;
 import java.util.Set;
-import kotlin.Metadata;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-import kotlin.jvm.internal.Intrinsics;
-import kotlin.jvm.internal.SourceDebugExtension;
-import kotlin.reflect.KClass;
+import java.util.function.Consumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import soot.SootField;
 
-@Metadata(mv={2, 0, 0}, k=1, xi=48, d1={"\u0000.\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0010\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0005\bf\u0018\u0000*\u0004\b\u0000\u0010\u00012\b\u0012\u0004\u0012\u0002H\u00010\u0002:\u0001\u000fJ/\u0010\u0003\u001a\b\u0012\u0004\u0012\u00028\u00000\u00042\u001f\u0010\u0005\u001a\u001b\u0012\b\u0012\u00060\u0007j\u0002`\b\u0012\u0004\u0012\u00020\t0\u0006j\u0002`\u000b\u00a2\u0006\u0002\b\nH&JP\u0010\f\u001a\b\u0012\u0004\u0012\u00028\u00000\u00002!\b\u0002\u0010\u0005\u001a\u001b\u0012\b\u0012\u00060\u0007j\u0002`\b\u0012\u0004\u0012\u00020\t0\u0006j\u0002`\u000b\u00a2\u0006\u0002\b\n2\u001d\u0010\r\u001a\u0019\u0012\n\u0012\b\u0012\u0004\u0012\u00028\u00000\u0004\u0012\u0004\u0012\u00020\t0\u0006\u00a2\u0006\u0002\b\nH\u0016JP\u0010\u000e\u001a\b\u0012\u0004\u0012\u00028\u00000\u00002!\b\u0002\u0010\u0005\u001a\u001b\u0012\b\u0012\u00060\u0007j\u0002`\b\u0012\u0004\u0012\u00020\t0\u0006j\u0002`\u000b\u00a2\u0006\u0002\b\n2\u001d\u0010\r\u001a\u0019\u0012\n\u0012\b\u0012\u0004\u0012\u00028\u00000\u0004\u0012\u0004\u0012\u00020\t0\u0006\u00a2\u0006\u0002\b\nH\u0016\u00a8\u0006\u0010"}, d2={"Lcom/feysh/corax/config/api/ISMethodDecl0;", "R", "Lcom/feysh/corax/config/api/ISMethodDecl;", "checkBuilder", "Lcom/feysh/corax/config/api/ISMethodDecl0$CheckBuilder;", "config", "Lkotlin/Function1;", "Lcom/feysh/corax/config/api/MethodConfig;", "Lcom/feysh/corax/config/api/MethodConfigType;", "", "Lkotlin/ExtensionFunctionType;", "Lcom/feysh/corax/config/api/MethodConfigBlockType;", "model", "block", "modelNoArg", "CheckBuilder", "corax-config-api"})
-public interface ISMethodDecl0<R>
-extends ISMethodDecl<R> {
-    @Override
-    @NotNull
-    public CheckBuilder<R> checkBuilder(@NotNull Function1<? super MethodConfig, Unit> var1);
+public interface ISMethodDecl0<R> extends ISMethodDecl<R> {
 
     @NotNull
-    public ISMethodDecl0<R> model(@NotNull Function1<? super MethodConfig, Unit> var1, @NotNull Function1<? super CheckBuilder<R>, Unit> var2);
+    CheckBuilder<R> checkBuilder(@NotNull Consumer<MethodConfig> config);
 
     @NotNull
-    public ISMethodDecl0<R> modelNoArg(@NotNull Function1<? super MethodConfig, Unit> var1, @NotNull Function1<? super CheckBuilder<R>, Unit> var2);
-
-    @Metadata(mv={2, 0, 0}, k=1, xi=48, d1={"\u0000\u0014\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0003\bf\u0018\u0000*\u0004\b\u0001\u0010\u00012\b\u0012\u0004\u0012\u0002H\u00010\u0002R\u0018\u0010\u0003\u001a\b\u0012\u0004\u0012\u00028\u00010\u0004X\u00a6\u0004\u00a2\u0006\u0006\u001a\u0004\b\u0005\u0010\u0006\u00a8\u0006\u0007"}, d2={"Lcom/feysh/corax/config/api/ISMethodDecl0$CheckBuilder;", "R", "Lcom/feysh/corax/config/api/ISMethodDecl$CheckBuilder;", "method", "Lcom/feysh/corax/config/api/ISMethodDecl0;", "getMethod", "()Lcom/feysh/corax/config/api/ISMethodDecl0;", "corax-config-api"})
-    public static interface CheckBuilder<R>
-    extends ISMethodDecl.CheckBuilder<R> {
-        @Override
-        @NotNull
-        public ISMethodDecl0<R> getMethod();
-
-        @Metadata(mv={2, 0, 0}, k=3, xi=48)
-        public static final class DefaultImpls {
-            @NotNull
-            public static <R> IAttribute<TaintProperty, Set<ITaintType>> plus(@NotNull CheckBuilder<R> $this, @NotNull IAttribute<TaintProperty, Set<ITaintType>> $receiver, @NotNull ITaintType single) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)single, (String)"single");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.plus((ISMethodDecl.CheckBuilder)$this, $receiver, single);
-            }
-
-            @NotNull
-            public static <R> IAttribute<ViaProperty, Set<IViaType>> plus(@NotNull CheckBuilder<R> $this, @NotNull IAttribute<ViaProperty, Set<IViaType>> $receiver, @NotNull IViaType single) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)single, (String)"single");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.plus((ISMethodDecl.CheckBuilder)$this, $receiver, single);
-            }
-
-            @NotNull
-            public static <R> IAttribute<TaintProperty, Set<ITaintType>> minus(@NotNull CheckBuilder<R> $this, @NotNull IAttribute<TaintProperty, Set<ITaintType>> $receiver, @NotNull ITaintType single) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)single, (String)"single");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.minus((ISMethodDecl.CheckBuilder)$this, $receiver, single);
-            }
-
-            @NotNull
-            public static <R> IAttribute<ViaProperty, Set<IViaType>> minus(@NotNull CheckBuilder<R> $this, @NotNull IAttribute<ViaProperty, Set<IViaType>> $receiver, @NotNull IViaType single) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)single, (String)"single");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.minus((ISMethodDecl.CheckBuilder)$this, $receiver, single);
-            }
-
-            @NotNull
-            public static <R> IBoolExpr startsWith(@NotNull CheckBuilder<R> $this, @NotNull IStringExpr $receiver, @NotNull String str) {
-                Intrinsics.checkNotNullParameter((Object)$receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)str, (String)"str");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.startsWith($this, $receiver, str);
-            }
-
-            @NotNull
-            public static <R> IBoolExpr endsWith(@NotNull CheckBuilder<R> $this, @NotNull IStringExpr $receiver, @NotNull String str) {
-                Intrinsics.checkNotNullParameter((Object)$receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)str, (String)"str");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.endsWith($this, $receiver, str);
-            }
-
-            @NotNull
-            public static <R> IBoolExpr contains(@NotNull CheckBuilder<R> $this, @NotNull IStringExpr $receiver, @NotNull String str) {
-                Intrinsics.checkNotNullParameter((Object)$receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)str, (String)"str");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.contains($this, $receiver, str);
-            }
-
-            @NotNull
-            public static <R> IBoolExpr stringEquals(@NotNull CheckBuilder<R> $this, @NotNull IStringExpr $receiver, @NotNull String str) {
-                Intrinsics.checkNotNullParameter((Object)$receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)str, (String)"str");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.stringEquals($this, $receiver, str);
-            }
-
-            @NotNull
-            public static <R> IAttribute<TaintProperty, Set<ITaintType>> taintOf(@NotNull CheckBuilder<R> $this, ITaintType ... type) {
-                Intrinsics.checkNotNullParameter((Object)type, (String)"type");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.taintOf($this, type);
-            }
-
-            @NotNull
-            public static <R> IAttribute<TaintProperty, Set<ITaintType>> getEmptyTaint(@NotNull CheckBuilder<R> $this) {
-                return ISMethodDecl.CheckBuilder.DefaultImpls.getEmptyTaint($this);
-            }
-
-            @NotNull
-            public static <R> IAttribute<ViaProperty, Set<IViaType>> getEmptyVia(@NotNull CheckBuilder<R> $this) {
-                return ISMethodDecl.CheckBuilder.DefaultImpls.getEmptyVia($this);
-            }
-
-            @NotNull
-            public static <R> IBoolExpr containsAll(@NotNull CheckBuilder<R> $this, @NotNull IAttribute<TaintProperty, Set<ITaintType>> $receiver, @NotNull ITaintType taint) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)taint, (String)"taint");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.containsAll($this, $receiver, taint);
-            }
-
-            @NotNull
-            public static <R_I1, T1 extends R, T2 extends R, R> ILocalValue<R> anyOr(@NotNull CheckBuilder<R_I1> $this, @NotNull ILocalT<T1> $receiver, @NotNull ILocalT<T2> second) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter(second, (String)"second");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.anyOr((ISMethodDecl.CheckBuilder)$this, $receiver, second);
-            }
-
-            @NotNull
-            public static <R, T> IAccessPathT<Object> field(@NotNull CheckBuilder<R> $this, @NotNull ILocalT<T> $receiver, @NotNull SootField field) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)field, (String)"field");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.field($this, $receiver, field);
-            }
-
-            @NotNull
-            public static <R, T, FieldType> IAccessPathT<FieldType> field(@NotNull CheckBuilder<R> $this, @NotNull ILocalT<T> $receiver, @Nullable KClass<?> declaringClass, @NotNull String fieldName, @NotNull KClass<FieldType> type) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)fieldName, (String)"fieldName");
-                Intrinsics.checkNotNullParameter(type, (String)"type");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.field((ISMethodDecl.CheckBuilder)$this, $receiver, declaringClass, fieldName, type);
-            }
-
-            @NotNull
-            public static <R, T> IAccessPathT<Object> field(@NotNull CheckBuilder<R> $this, @NotNull ILocalT<T> $receiver, @NotNull KClass<?> declaringClass, @NotNull String fieldName, @Nullable String fieldType) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter(declaringClass, (String)"declaringClass");
-                Intrinsics.checkNotNullParameter((Object)fieldName, (String)"fieldName");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.field((ISMethodDecl.CheckBuilder)$this, $receiver, declaringClass, fieldName, fieldType);
-            }
-
-            public static <R> void check(@NotNull CheckBuilder<R> $this, @NotNull ILocalT<Boolean> expr, @NotNull CheckType checkType, @NotNull Function1<? super BugMessage.Env, Unit> env) {
-                Intrinsics.checkNotNullParameter(expr, (String)"expr");
-                Intrinsics.checkNotNullParameter((Object)checkType, (String)"checkType");
-                Intrinsics.checkNotNullParameter(env, (String)"env");
-                ISMethodDecl.CheckBuilder.DefaultImpls.check($this, expr, checkType, env);
-            }
-        }
+    default ISMethodDecl0<R> model(@NotNull Consumer<MethodConfig> config, @NotNull Consumer<CheckBuilder<R>> block) {
+        CheckBuilder<R> builder = checkBuilder(config);
+        block.accept(builder);
+        return this;
     }
 
-    @Metadata(mv={2, 0, 0}, k=3, xi=48)
-    @SourceDebugExtension(value={"SMAP\nStaticMethodInterface.kt\nKotlin\n*S Kotlin\n*F\n+ 1 StaticMethodInterface.kt\ncom/feysh/corax/config/api/ISMethodDecl0$DefaultImpls\n+ 2 fake.kt\nkotlin/jvm/internal/FakeKt\n*L\n1#1,577:1\n1#2:578\n*E\n"})
-    public static final class DefaultImpls {
-        @NotNull
-        public static <R> ISMethodDecl0<R> model(@NotNull ISMethodDecl0<R> $this, @NotNull Function1<? super MethodConfig, Unit> config, @NotNull Function1<? super CheckBuilder<R>, Unit> block) {
-            CheckBuilder<R> checkBuilder2;
-            Intrinsics.checkNotNullParameter(config, (String)"config");
-            Intrinsics.checkNotNullParameter(block, (String)"block");
-            CheckBuilder<R> $this$model_u24lambda_u241 = checkBuilder2 = $this.checkBuilder(config);
-            boolean bl = false;
-            block.invoke($this$model_u24lambda_u241);
-            return $this;
-        }
+    @NotNull
+    default ISMethodDecl0<R> modelNoArg(@NotNull Consumer<MethodConfig> config, @NotNull Consumer<CheckBuilder<R>> block) {
+        CheckBuilder<R> builder = checkBuilder(config);
+        block.accept(builder);
+        return this;
+    }
 
-        public static /* synthetic */ ISMethodDecl0 model$default(ISMethodDecl0 iSMethodDecl0, Function1 function1, Function1 function12, int n, Object object) {
-            if (object != null) {
-                throw new UnsupportedOperationException("Super calls with default arguments not supported in this target, function: model");
-            }
-            if ((n & 1) != 0) {
-                function1 = DefaultImpls::model$lambda$0;
-            }
-            return iSMethodDecl0.model((Function1<MethodConfig, Unit>)function1, function12);
+    interface CheckBuilder<R> extends ISMethodDecl.CheckBuilder<R> {
+        @NotNull
+        ISMethodDecl0<R> getMethod();
+
+        @NotNull
+        default IAttribute<TaintProperty, Set<ITaintType>> plus(@NotNull IAttribute<TaintProperty, Set<ITaintType>> receiver, @NotNull ITaintType single) {
+            return ISMethodDecl.CheckBuilder.super.plus(receiver, single);
         }
 
         @NotNull
-        public static <R> ISMethodDecl0<R> modelNoArg(@NotNull ISMethodDecl0<R> $this, @NotNull Function1<? super MethodConfig, Unit> config, @NotNull Function1<? super CheckBuilder<R>, Unit> block) {
-            CheckBuilder<R> checkBuilder2;
-            Intrinsics.checkNotNullParameter(config, (String)"config");
-            Intrinsics.checkNotNullParameter(block, (String)"block");
-            CheckBuilder<R> $this$modelNoArg_u24lambda_u243 = checkBuilder2 = $this.checkBuilder(config);
-            boolean bl = false;
-            block.invoke($this$modelNoArg_u24lambda_u243);
-            return $this;
+        default IAttribute<ViaProperty, Set<IViaType>> plus(@NotNull IAttribute<ViaProperty, Set<IViaType>> receiver, @NotNull IViaType single) {
+            return ISMethodDecl.CheckBuilder.super.plus(receiver, single);
         }
 
-        public static /* synthetic */ ISMethodDecl0 modelNoArg$default(ISMethodDecl0 iSMethodDecl0, Function1 function1, Function1 function12, int n, Object object) {
-            if (object != null) {
-                throw new UnsupportedOperationException("Super calls with default arguments not supported in this target, function: modelNoArg");
-            }
-            if ((n & 1) != 0) {
-                function1 = DefaultImpls::modelNoArg$lambda$2;
-            }
-            return iSMethodDecl0.modelNoArg((Function1<MethodConfig, Unit>)function1, function12);
+        @NotNull
+        default IAttribute<TaintProperty, Set<ITaintType>> minus(@NotNull IAttribute<TaintProperty, Set<ITaintType>> receiver, @NotNull ITaintType single) {
+            return ISMethodDecl.CheckBuilder.super.minus(receiver, single);
         }
 
-        @Nullable
-        public static <R> Integer getArgumentCnt(@NotNull ISMethodDecl0<R> $this) {
-            return ISMethodDecl.DefaultImpls.getArgumentCnt($this);
+        @NotNull
+        default IAttribute<ViaProperty, Set<IViaType>> minus(@NotNull IAttribute<ViaProperty, Set<IViaType>> receiver, @NotNull IViaType single) {
+            return ISMethodDecl.CheckBuilder.super.minus(receiver, single);
         }
 
-        @Nullable
-        public static <R> KFunctionType getActualType(@NotNull ISMethodDecl0<R> $this) {
-            return ISMethodDecl.DefaultImpls.getActualType($this);
+        @NotNull
+        default IBoolExpr startsWith(@NotNull IStringExpr receiver, @NotNull String str) {
+            return ISMethodDecl.CheckBuilder.super.startsWith(receiver, str);
         }
 
-        private static Unit model$lambda$0(MethodConfig methodConfig) {
-            Intrinsics.checkNotNullParameter((Object)methodConfig, (String)"<this>");
-            return Unit.INSTANCE;
+        @NotNull
+        default IBoolExpr endsWith(@NotNull IStringExpr receiver, @NotNull String str) {
+            return ISMethodDecl.CheckBuilder.super.endsWith(receiver, str);
         }
 
-        private static Unit modelNoArg$lambda$2(MethodConfig methodConfig) {
-            Intrinsics.checkNotNullParameter((Object)methodConfig, (String)"<this>");
-            return Unit.INSTANCE;
+        @NotNull
+        default IBoolExpr contains(@NotNull IStringExpr receiver, @NotNull String str) {
+            return ISMethodDecl.CheckBuilder.super.contains(receiver, str);
+        }
+
+        @NotNull
+        default IBoolExpr stringEquals(@NotNull IStringExpr receiver, @NotNull String str) {
+            return ISMethodDecl.CheckBuilder.super.stringEquals(receiver, str);
+        }
+
+        @NotNull
+        default IAttribute<TaintProperty, Set<ITaintType>> taintOf(ITaintType... type) {
+            return ISMethodDecl.CheckBuilder.super.taintOf(type);
+        }
+
+        @NotNull
+        default IAttribute<TaintProperty, Set<ITaintType>> getEmptyTaint() {
+            return ISMethodDecl.CheckBuilder.super.getEmptyTaint();
+        }
+
+        @NotNull
+        default IAttribute<ViaProperty, Set<IViaType>> getEmptyVia() {
+            return ISMethodDecl.CheckBuilder.super.getEmptyVia();
+        }
+
+        @NotNull
+        default IBoolExpr containsAll(@NotNull IAttribute<TaintProperty, Set<ITaintType>> receiver, @NotNull ITaintType taint) {
+            return ISMethodDecl.CheckBuilder.super.containsAll(receiver, taint);
+        }
+
+        @NotNull
+        default <T1 extends R, T2 extends R> ILocalValue<R> anyOr(@NotNull ILocalT<T1> receiver, @NotNull ILocalT<T2> second) {
+            return ISMethodDecl.CheckBuilder.super.anyOr(receiver, second);
+        }
+
+        @NotNull
+        default <T> IAccessPathT<Object> field(@NotNull ILocalT<T> receiver, @NotNull SootField field) {
+            return ISMethodDecl.CheckBuilder.super.field(receiver, field);
+        }
+
+        @NotNull
+        default <T, FieldType> IAccessPathT<FieldType> field(
+            @NotNull ILocalT<T> receiver, 
+            @Nullable Class<?> declaringClass, 
+            @NotNull String fieldName, 
+            @NotNull Class<FieldType> type
+        ) {
+            return ISMethodDecl.CheckBuilder.super.field(receiver, declaringClass, fieldName, type);
+        }
+
+        @NotNull
+        default <T> IAccessPathT<Object> field(
+            @NotNull ILocalT<T> receiver, 
+            @NotNull Class<?> declaringClass, 
+            @NotNull String fieldName, 
+            @Nullable String fieldType
+        ) {
+            return ISMethodDecl.CheckBuilder.super.field(receiver, declaringClass, fieldName, fieldType);
+        }
+
+        default void check(
+            @NotNull ILocalT<Boolean> expr, 
+            @NotNull CheckType checkType, 
+            @NotNull Consumer<BugMessage.Env> env
+        ) {
+            ISMethodDecl.CheckBuilder.super.check(expr, checkType, env);
         }
     }
 }
-

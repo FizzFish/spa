@@ -1,331 +1,230 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  cn.sast.dataflow.interprocedural.analysis.ACheckCallAnalysis
- *  cn.sast.dataflow.interprocedural.analysis.AbstractHeapFactory
- *  cn.sast.dataflow.interprocedural.analysis.AnyNewExprEnv
- *  cn.sast.dataflow.interprocedural.analysis.CompanionV
- *  cn.sast.dataflow.interprocedural.analysis.FactValuesKt
- *  cn.sast.dataflow.interprocedural.analysis.FieldUtil
- *  cn.sast.dataflow.interprocedural.analysis.HeapValuesEnv
- *  cn.sast.dataflow.interprocedural.analysis.IData
- *  cn.sast.dataflow.interprocedural.analysis.IFact$Builder
- *  cn.sast.dataflow.interprocedural.analysis.IHeapValues
- *  cn.sast.dataflow.interprocedural.analysis.IHeapValues$Builder
- *  cn.sast.dataflow.interprocedural.analysis.IHeapValuesFactory
- *  cn.sast.dataflow.interprocedural.analysis.IOpCalculator
- *  cn.sast.dataflow.interprocedural.analysis.IVGlobal
- *  cn.sast.dataflow.interprocedural.analysis.IValue
- *  cn.sast.dataflow.interprocedural.analysis.JFieldType
- *  cn.sast.dataflow.interprocedural.analysis.JOperatorV
- *  cn.sast.dataflow.interprocedural.analysis.JOperatorV$DefaultImpls
- *  cn.sast.dataflow.interprocedural.analysis.JSootFieldType
- *  cn.sast.dataflow.interprocedural.analysis.SummaryHandlePackage
- *  cn.sast.dataflow.interprocedural.analysis.heapimpl.IArrayHeapKV
- *  cn.sast.dataflow.interprocedural.check.ArraySpace
- *  cn.sast.dataflow.interprocedural.check.BuiltInModelT
- *  cn.sast.dataflow.interprocedural.check.PointsToGraphBuilder
- *  cn.sast.dataflow.interprocedural.check.callback.CalleeCBImpl$EvalCall
- *  cn.sast.dataflow.interprocedural.check.callback.ICallCBImpl
- *  cn.sast.dataflow.interprocedural.override.lang.WString
- *  cn.sast.dataflow.interprocedural.override.lang.WStringCoding
- *  cn.sast.dataflow.interprocedural.override.lang.WStringCoding$Companion
- *  cn.sast.dataflow.interprocedural.override.lang.WStringKt
- *  cn.sast.dataflow.util.SootUtilsKt
- *  kotlin.Metadata
- *  kotlin.Unit
- *  kotlin.collections.ArraysKt
- *  kotlin.jvm.internal.Intrinsics
- *  kotlin.jvm.internal.SourceDebugExtension
- *  kotlin.text.Charsets
- *  org.jetbrains.annotations.NotNull
- *  soot.ByteType
- *  soot.G
- *  soot.Local
- *  soot.RefType
- *  soot.SootField
- *  soot.Type
- *  soot.Value
- *  soot.jimple.AnyNewExpr
- *  soot.jimple.Constant
- *  soot.jimple.Jimple
- *  soot.jimple.NewArrayExpr
- *  soot.jimple.NewExpr
- */
 package cn.sast.dataflow.interprocedural.override.lang;
 
-import cn.sast.dataflow.interprocedural.analysis.ACheckCallAnalysis;
-import cn.sast.dataflow.interprocedural.analysis.AbstractHeapFactory;
-import cn.sast.dataflow.interprocedural.analysis.AnyNewExprEnv;
-import cn.sast.dataflow.interprocedural.analysis.CompanionV;
-import cn.sast.dataflow.interprocedural.analysis.FactValuesKt;
-import cn.sast.dataflow.interprocedural.analysis.FieldUtil;
-import cn.sast.dataflow.interprocedural.analysis.HeapValuesEnv;
-import cn.sast.dataflow.interprocedural.analysis.IData;
-import cn.sast.dataflow.interprocedural.analysis.IFact;
-import cn.sast.dataflow.interprocedural.analysis.IHeapValues;
-import cn.sast.dataflow.interprocedural.analysis.IHeapValuesFactory;
-import cn.sast.dataflow.interprocedural.analysis.IOpCalculator;
-import cn.sast.dataflow.interprocedural.analysis.IVGlobal;
-import cn.sast.dataflow.interprocedural.analysis.IValue;
-import cn.sast.dataflow.interprocedural.analysis.JFieldType;
-import cn.sast.dataflow.interprocedural.analysis.JOperatorV;
-import cn.sast.dataflow.interprocedural.analysis.JSootFieldType;
-import cn.sast.dataflow.interprocedural.analysis.SummaryHandlePackage;
+import cn.sast.dataflow.interprocedural.analysis.*;
 import cn.sast.dataflow.interprocedural.analysis.heapimpl.IArrayHeapKV;
-import cn.sast.dataflow.interprocedural.check.ArraySpace;
-import cn.sast.dataflow.interprocedural.check.BuiltInModelT;
-import cn.sast.dataflow.interprocedural.check.PointsToGraphBuilder;
+import cn.sast.dataflow.interprocedural.check.*;
 import cn.sast.dataflow.interprocedural.check.callback.CalleeCBImpl;
 import cn.sast.dataflow.interprocedural.check.callback.ICallCBImpl;
-import cn.sast.dataflow.interprocedural.override.lang.WString;
-import cn.sast.dataflow.interprocedural.override.lang.WStringCoding;
-import cn.sast.dataflow.interprocedural.override.lang.WStringKt;
 import cn.sast.dataflow.util.SootUtilsKt;
-import kotlin.Metadata;
-import kotlin.Unit;
-import kotlin.collections.ArraysKt;
-import kotlin.jvm.internal.Intrinsics;
-import kotlin.jvm.internal.SourceDebugExtension;
-import kotlin.text.Charsets;
 import org.jetbrains.annotations.NotNull;
-import soot.ByteType;
-import soot.G;
-import soot.Local;
-import soot.RefType;
-import soot.SootField;
-import soot.Type;
-import soot.Value;
-import soot.jimple.AnyNewExpr;
-import soot.jimple.Constant;
-import soot.jimple.Jimple;
-import soot.jimple.NewArrayExpr;
-import soot.jimple.NewExpr;
+import soot.*;
+import soot.jimple.*;
+import java.nio.charset.StandardCharsets;
 
-@Metadata(mv={2, 0, 0}, k=1, xi=48, d1={"\u0000Z\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0005\n\u0002\u0018\u0002\n\u0002\b\u0004\n\u0002\u0010\u000e\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0004\n\u0002\u0018\u0002\n\u0002\b\u0004\n\u0002\u0018\u0002\n\u0002\b\u0005\n\u0002\u0010\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0002\u0018\u0000 +2\f\u0012\b\u0012\u00060\u0002j\u0002`\u00030\u0001:\u0001+B\u000f\u0012\u0006\u0010\u0004\u001a\u00020\u0005\u00a2\u0006\u0004\b\u0006\u0010\u0007J\u001a\u0010'\u001a\u00020(*\u00100)j\f\u0012\b\u0012\u00060\u0002j\u0002`\u0003`*H\u0016R\u001b\u0010\b\u001a\n \n*\u0004\u0018\u00010\t0\t\u00a2\u0006\n\n\u0002\u0010\r\u001a\u0004\b\u000b\u0010\fR\u001b\u0010\u000e\u001a\n \n*\u0004\u0018\u00010\u000f0\u000f\u00a2\u0006\n\n\u0002\u0010\u0012\u001a\u0004\b\u0010\u0010\u0011R\u0014\u0010\u0013\u001a\u00020\u0014X\u0086D\u00a2\u0006\b\n\u0000\u001a\u0004\b\u0015\u0010\u0016R\u001b\u0010\u0017\u001a\n \n*\u0004\u0018\u00010\u00180\u0018\u00a2\u0006\n\n\u0002\u0010\u001b\u001a\u0004\b\u0019\u0010\u001aR\u001b\u0010\u001c\u001a\n \n*\u0004\u0018\u00010\u001d0\u001d\u00a2\u0006\n\n\u0002\u0010 \u001a\u0004\b\u001e\u0010\u001fR\u0011\u0010!\u001a\u00020\"\u00a2\u0006\b\n\u0000\u001a\u0004\b#\u0010$R\u0011\u0010%\u001a\u00020\"\u00a2\u0006\b\n\u0000\u001a\u0004\b&\u0010$\u00a8\u0006,"}, d2={"Lcn/sast/dataflow/interprocedural/override/lang/WStringCoding;", "Lcn/sast/dataflow/interprocedural/analysis/SummaryHandlePackage;", "Lcn/sast/dataflow/interprocedural/analysis/IValue;", "Lcn/sast/dataflow/interprocedural/analysis/V;", "vg", "Lcn/sast/dataflow/interprocedural/analysis/IVGlobal;", "<init>", "(Lcn/sast/dataflow/interprocedural/analysis/IVGlobal;)V", "sizeLocal", "Lsoot/Local;", "kotlin.jvm.PlatformType", "getSizeLocal", "()Lsoot/Local;", "Lsoot/Local;", "newValueExpr", "Lsoot/jimple/NewArrayExpr;", "getNewValueExpr", "()Lsoot/jimple/NewArrayExpr;", "Lsoot/jimple/NewArrayExpr;", "clzStringCodingResult", "", "getClzStringCodingResult", "()Ljava/lang/String;", "StringCodingResultType", "Lsoot/RefType;", "getStringCodingResultType", "()Lsoot/RefType;", "Lsoot/RefType;", "newExprStringCodingResult", "Lsoot/jimple/NewExpr;", "getNewExprStringCodingResult", "()Lsoot/jimple/NewExpr;", "Lsoot/jimple/NewExpr;", "stringCodingResultValueField", "Lsoot/SootField;", "getStringCodingResultValueField", "()Lsoot/SootField;", "stringCodingResultCoderField", "getStringCodingResultCoderField", "register", "", "Lcn/sast/dataflow/interprocedural/analysis/ACheckCallAnalysis;", "Lcn/sast/dataflow/interprocedural/analysis/AnalysisInSummary;", "Companion", "corax-data-flow"})
-@SourceDebugExtension(value={"SMAP\nWStringCoding.kt\nKotlin\n*S Kotlin\n*F\n+ 1 WStringCoding.kt\ncn/sast/dataflow/interprocedural/override/lang/WStringCoding\n+ 2 IFact.kt\ncn/sast/dataflow/interprocedural/analysis/FieldUtil\n*L\n1#1,112:1\n44#2:113\n44#2:114\n*S KotlinDebug\n*F\n+ 1 WStringCoding.kt\ncn/sast/dataflow/interprocedural/override/lang/WStringCoding\n*L\n93#1:113\n100#1:114\n*E\n"})
-public final class WStringCoding
-implements SummaryHandlePackage<IValue> {
-    @NotNull
-    public static final Companion Companion = new Companion(null);
+public final class WStringCoding implements SummaryHandlePackage<IValue> {
+    public static final class Companion {
+        private Companion() {}
+    }
+
+    public static final Companion Companion = new Companion();
+    
     private final Local sizeLocal;
     private final NewArrayExpr newValueExpr;
-    @NotNull
     private final String clzStringCodingResult;
     private final RefType StringCodingResultType;
     private final NewExpr newExprStringCodingResult;
-    @NotNull
     private final SootField stringCodingResultValueField;
-    @NotNull
     private final SootField stringCodingResultCoderField;
 
     public WStringCoding(@NotNull IVGlobal vg) {
-        Intrinsics.checkNotNullParameter((Object)vg, (String)"vg");
-        this.sizeLocal = Jimple.v().newLocal("size", (Type)G.v().soot_IntType());
-        this.newValueExpr = Jimple.v().newNewArrayExpr((Type)vg.getBYTE_ARRAY_TYPE(), (Value)this.sizeLocal);
+        if (vg == null) throw new IllegalArgumentException("vg cannot be null");
+        
+        this.sizeLocal = Jimple.v().newLocal("size", G.v().soot_IntType());
+        this.newValueExpr = Jimple.v().newNewArrayExpr(vg.getBYTE_ARRAY_TYPE(), this.sizeLocal);
         this.clzStringCodingResult = "java.lang.StringCoding$Result";
-        this.StringCodingResultType = RefType.v((String)this.clzStringCodingResult);
+        this.StringCodingResultType = RefType.v(this.clzStringCodingResult);
         this.newExprStringCodingResult = Jimple.v().newNewExpr(this.StringCodingResultType);
-        this.stringCodingResultValueField = SootUtilsKt.getOrMakeField((String)this.clzStringCodingResult, (String)"value", (Type)((Type)vg.getBYTE_ARRAY_TYPE()));
-        ByteType byteType = G.v().soot_ByteType();
-        Intrinsics.checkNotNullExpressionValue((Object)byteType, (String)"soot_ByteType(...)");
-        this.stringCodingResultCoderField = SootUtilsKt.getOrMakeField((String)this.clzStringCodingResult, (String)"coder", (Type)((Type)byteType));
+        this.stringCodingResultValueField = SootUtilsKt.getOrMakeField(
+            this.clzStringCodingResult, "value", vg.getBYTE_ARRAY_TYPE());
+        this.stringCodingResultCoderField = SootUtilsKt.getOrMakeField(
+            this.clzStringCodingResult, "coder", G.v().soot_ByteType());
     }
 
-    public final Local getSizeLocal() {
-        return this.sizeLocal;
+    public Local getSizeLocal() {
+        return sizeLocal;
     }
 
-    public final NewArrayExpr getNewValueExpr() {
-        return this.newValueExpr;
-    }
-
-    @NotNull
-    public final String getClzStringCodingResult() {
-        return this.clzStringCodingResult;
-    }
-
-    public final RefType getStringCodingResultType() {
-        return this.StringCodingResultType;
-    }
-
-    public final NewExpr getNewExprStringCodingResult() {
-        return this.newExprStringCodingResult;
+    public NewArrayExpr getNewValueExpr() {
+        return newValueExpr;
     }
 
     @NotNull
-    public final SootField getStringCodingResultValueField() {
-        return this.stringCodingResultValueField;
+    public String getClzStringCodingResult() {
+        return clzStringCodingResult;
+    }
+
+    public RefType getStringCodingResultType() {
+        return StringCodingResultType;
+    }
+
+    public NewExpr getNewExprStringCodingResult() {
+        return newExprStringCodingResult;
     }
 
     @NotNull
-    public final SootField getStringCodingResultCoderField() {
-        return this.stringCodingResultCoderField;
+    public SootField getStringCodingResultValueField() {
+        return stringCodingResultValueField;
     }
 
-    public void register(@NotNull ACheckCallAnalysis $this$register) {
-        Intrinsics.checkNotNullParameter((Object)$this$register, (String)"<this>");
-        $this$register.evalCall("<java.lang.StringCoding: byte[] encode(byte,byte[])>", arg_0 -> WStringCoding.register$lambda$1(this, arg_0));
-        $this$register.evalCall("<java.lang.StringCoding: java.lang.StringCoding$Result decode(byte[],int,int)>", arg_0 -> WStringCoding.register$lambda$3(this, arg_0));
+    @NotNull
+    public SootField getStringCodingResultCoderField() {
+        return stringCodingResultCoderField;
     }
 
-    private static final boolean register$lambda$1$lambda$0(CalleeCBImpl.EvalCall $this_evalCall, WStringCoding this$0, IOpCalculator $this$encode, IHeapValues.Builder ret, CompanionV[] companionVArray) {
-        Object object;
-        byte coderInt;
-        CompanionV companionV;
-        block6: {
-            block5: {
-                Intrinsics.checkNotNullParameter((Object)$this$encode, (String)"$this$encode");
-                Intrinsics.checkNotNullParameter((Object)ret, (String)"ret");
-                Intrinsics.checkNotNullParameter((Object)companionVArray, (String)"<destruct>");
-                CompanionV coder = companionVArray[0];
-                companionV = companionVArray[1];
-                Byte by = FactValuesKt.getByteValue((IValue)((IValue)coder.getValue()), (boolean)true);
-                if (by == null) {
-                    return false;
-                }
-                coderInt = by;
-                byte[] byArray = WStringKt.getByteArray((ICallCBImpl)((ICallCBImpl)$this_evalCall), (IValue)((IValue)companionV.getValue()));
-                if (byArray == null) {
-                    return false;
-                }
-                byte[] byteArray = byArray;
-                IData iData = $this_evalCall.getOut().getValueData(companionV.getValue(), (Object)BuiltInModelT.Array);
-                IArrayHeapKV arrayData = iData instanceof IArrayHeapKV ? (IArrayHeapKV)iData : null;
-                object = arrayData;
-                if (object == null) break block5;
-                byte[] byArray2 = object.getByteArray((IHeapValuesFactory)$this_evalCall.getHf());
-                object = byArray2;
-                if (byArray2 != null) break block6;
-            }
-            return false;
-        }
-        Object array = object;
-        String str = coderInt == WString.Companion.getLATIN1_BYTE() ? new String((byte[])array, Charsets.UTF_8) : new String((byte[])array, Charsets.UTF_16);
-        byte[] byArray = str.getBytes(Charsets.UTF_8);
-        Intrinsics.checkNotNullExpressionValue((Object)byArray, (String)"getBytes(...)");
-        byte[] returnArr = byArray;
-        AbstractHeapFactory abstractHeapFactory = $this_evalCall.getHf();
-        HeapValuesEnv heapValuesEnv = (HeapValuesEnv)$this_evalCall.getEnv();
-        AbstractHeapFactory abstractHeapFactory2 = $this_evalCall.getHf();
-        AnyNewExprEnv anyNewExprEnv = $this_evalCall.getNewEnv();
-        NewArrayExpr newArrayExpr = this$0.newValueExpr;
-        Intrinsics.checkNotNullExpressionValue((Object)newArrayExpr, (String)"newValueExpr");
-        JOperatorV jOperatorV = abstractHeapFactory.push(heapValuesEnv, abstractHeapFactory2.anyNewVal(anyNewExprEnv, (AnyNewExpr)newArrayExpr));
-        NewArrayExpr newArrayExpr2 = this$0.newValueExpr;
-        Intrinsics.checkNotNullExpressionValue((Object)newArrayExpr2, (String)"newValueExpr");
-        CompanionV newValue = jOperatorV.markOfNewExpr((AnyNewExpr)newArrayExpr2).pop();
-        ret.add(newValue);
-        IHeapValues arraySize = $this_evalCall.getHf().push((HeapValuesEnv)$this_evalCall.getEnv(), $this_evalCall.getHf().toConstVal((Object)returnArr.length)).markArraySizeOf(companionV).popHV();
-        ArraySpace newArray = ArraySpace.Companion.v($this_evalCall.getHf(), (HeapValuesEnv)$this_evalCall.getEnv(), companionV, (Number[])ArraysKt.toTypedArray((byte[])returnArr), $this_evalCall.getHf().getVg().getBYTE_ARRAY_TYPE(), arraySize);
-        $this_evalCall.getOut().setValueData((HeapValuesEnv)$this_evalCall.getEnv(), newValue.getValue(), (Object)BuiltInModelT.Array, (IData)newArray);
-        return true;
+    @Override
+    public void register(@NotNull ACheckCallAnalysis analysis) {
+        if (analysis == null) throw new IllegalArgumentException("analysis cannot be null");
+        
+        analysis.evalCall("<java.lang.StringCoding: byte[] encode(byte,byte[])>", 
+            call -> handleEncodeCall(this, call));
+        analysis.evalCall("<java.lang.StringCoding: java.lang.StringCoding$Result decode(byte[],int,int)>", 
+            call -> handleDecodeCall(this, call));
     }
 
-    private static final Unit register$lambda$1(WStringCoding this$0, CalleeCBImpl.EvalCall $this$evalCall) {
-        Intrinsics.checkNotNullParameter((Object)$this$evalCall, (String)"$this$evalCall");
-        IHeapValues coderP = $this$evalCall.arg(0);
-        IHeapValues valP = $this$evalCall.arg(1);
-        IHeapValues[] iHeapValuesArray = new IHeapValues[]{coderP, valP};
-        IOpCalculator encodeOp = $this$evalCall.getHf().resolveOp((HeapValuesEnv)$this$evalCall.getEnv(), iHeapValuesArray);
-        encodeOp.resolve((arg_0, arg_1, arg_2) -> WStringCoding.register$lambda$1$lambda$0($this$evalCall, this$0, arg_0, arg_1, arg_2));
-        encodeOp.putSummaryIfNotConcrete((Type)$this$evalCall.getHf().getVg().getBYTE_ARRAY_TYPE(), (Object)"return");
-        $this$evalCall.setReturn(encodeOp.getRes().build());
+    private static Unit handleEncodeCall(WStringCoding coding, CalleeCBImpl.EvalCall call) {
+        IHeapValues coderP = call.arg(0);
+        IHeapValues valP = call.arg(1);
+        IHeapValues[] args = {coderP, valP};
+        
+        IOpCalculator encodeOp = call.getHf().resolveOp((HeapValuesEnv) call.getEnv(), args);
+        encodeOp.resolve((op, ret, companions) -> 
+            handleEncodeOperation(call, coding, op, ret, companions));
+        
+        encodeOp.putSummaryIfNotConcrete(call.getHf().getVg().getBYTE_ARRAY_TYPE(), "return");
+        call.setReturn(encodeOp.getRes().build());
         return Unit.INSTANCE;
     }
 
-    private static final boolean register$lambda$3$lambda$2(CalleeCBImpl.EvalCall $this_evalCall, WStringCoding this$0, IOpCalculator $this$encode, IHeapValues.Builder res, CompanionV[] companionVArray) {
-        byte[] byArray;
-        Intrinsics.checkNotNullParameter((Object)$this$encode, (String)"$this$encode");
-        Intrinsics.checkNotNullParameter((Object)res, (String)"res");
-        Intrinsics.checkNotNullParameter((Object)companionVArray, (String)"<destruct>");
-        CompanionV companionV = companionVArray[0];
-        CompanionV off = companionVArray[1];
-        CompanionV len = companionVArray[2];
-        Integer n = FactValuesKt.getIntValue((IValue)((IValue)off.getValue()), (boolean)true);
-        if (n == null) {
-            return false;
-        }
-        int offInt = n;
-        Integer n2 = FactValuesKt.getIntValue((IValue)((IValue)len.getValue()), (boolean)true);
-        if (n2 == null) {
-            return false;
-        }
-        int lenInt = n2;
-        byte[] byArray2 = WStringKt.getByteArray((ICallCBImpl)((ICallCBImpl)$this_evalCall), (IValue)((IValue)companionV.getValue()));
-        if (byArray2 == null) {
-            return false;
-        }
-        byte[] byteArray = byArray2;
+    private static boolean handleEncodeOperation(CalleeCBImpl.EvalCall call, WStringCoding coding, 
+            IOpCalculator op, IHeapValues.Builder ret, CompanionV[] companions) {
+        CompanionV coder = companions[0];
+        CompanionV val = companions[1];
+        
+        Byte coderByte = FactValuesKt.getByteValue(coder.getValue(), true);
+        if (coderByte == null) return false;
+        
+        byte[] bytes = WStringKt.getByteArray(call, val.getValue());
+        if (bytes == null) return false;
+        
+        IData data = call.getOut().getValueData(val.getValue(), BuiltInModelT.Array);
+        IArrayHeapKV arrayData = data instanceof IArrayHeapKV ? (IArrayHeapKV) data : null;
+        if (arrayData == null) return false;
+        
+        byte[] array = arrayData.getByteArray(call.getHf());
+        if (array == null) return false;
+        
+        String str = coderByte == WString.Companion.getLATIN1_BYTE() 
+            ? new String(array, StandardCharsets.UTF_8) 
+            : new String(array, StandardCharsets.UTF_16);
+        byte[] returnArr = str.getBytes(StandardCharsets.UTF_8);
+        
+        // Create new value
+        AbstractHeapFactory hf = call.getHf();
+        HeapValuesEnv env = (HeapValuesEnv) call.getEnv();
+        AnyNewExprEnv newEnv = call.getNewEnv();
+        
+        CompanionV newValue = hf.push(env, hf.anyNewVal(newEnv, coding.newValueExpr))
+            .markOfNewExpr(coding.newValueExpr)
+            .pop();
+            
+        ret.add(newValue);
+        
+        IHeapValues arraySize = hf.push(env, hf.toConstVal(returnArr.length))
+            .markArraySizeOf(val)
+            .popHV();
+            
+        ArraySpace newArray = ArraySpace.Companion.v(
+            hf, env, val, 
+            ArraysKt.toTypedArray(returnArr), 
+            hf.getVg().getBYTE_ARRAY_TYPE(), 
+            arraySize);
+            
+        call.getOut().setValueData(env, newValue.getValue(), BuiltInModelT.Array, newArray);
+        return true;
+    }
+
+    private static Unit handleDecodeCall(WStringCoding coding, CalleeCBImpl.EvalCall call) {
+        IHeapValues baP = call.arg(0);
+        IHeapValues offP = call.arg(1);
+        IHeapValues lenP = call.arg(2);
+        IHeapValues[] args = {baP, offP, lenP};
+        
+        IOpCalculator decodeOp = call.getHf().resolveOp((HeapValuesEnv) call.getEnv(), args);
+        decodeOp.resolve((op, res, companions) -> 
+            handleDecodeOperation(call, coding, op, res, companions));
+            
+        decodeOp.putSummaryIfNotConcrete(coding.StringCodingResultType, "return");
+        call.setReturn(decodeOp.getRes().build());
+        return Unit.INSTANCE;
+    }
+
+    private static boolean handleDecodeOperation(CalleeCBImpl.EvalCall call, WStringCoding coding, 
+            IOpCalculator op, IHeapValues.Builder res, CompanionV[] companions) {
+        CompanionV ba = companions[0];
+        CompanionV off = companions[1];
+        CompanionV len = companions[2];
+        
+        Integer offInt = FactValuesKt.getIntValue(off.getValue(), true);
+        Integer lenInt = FactValuesKt.getIntValue(len.getValue(), true);
+        if (offInt == null || lenInt == null) return false;
+        
+        byte[] bytes = WStringKt.getByteArray(call, ba.getValue());
+        if (bytes == null) return false;
+        
+        byte[] newValueArray;
         try {
-            byte[] byArray3 = new String(byteArray, offInt, lenInt, Charsets.UTF_8).getBytes(Charsets.UTF_8);
-            Intrinsics.checkNotNullExpressionValue((Object)byArray3, (String)"getBytes(...)");
-            byArray = byArray3;
-        }
-        catch (StringIndexOutOfBoundsException e) {
+            newValueArray = new String(bytes, offInt, lenInt, StandardCharsets.UTF_8)
+                .getBytes(StandardCharsets.UTF_8);
+        } catch (StringIndexOutOfBoundsException e) {
             return false;
         }
-        byte[] newValueArray = byArray;
-        AbstractHeapFactory abstractHeapFactory = $this_evalCall.getHf();
-        HeapValuesEnv heapValuesEnv = (HeapValuesEnv)$this_evalCall.getEnv();
-        AbstractHeapFactory abstractHeapFactory2 = $this_evalCall.getHf();
-        AnyNewExprEnv anyNewExprEnv = $this_evalCall.getNewEnv();
-        NewExpr newExpr2 = this$0.newExprStringCodingResult;
-        Intrinsics.checkNotNullExpressionValue((Object)newExpr2, (String)"newExprStringCodingResult");
-        JOperatorV jOperatorV = abstractHeapFactory.push(heapValuesEnv, abstractHeapFactory2.anyNewVal(anyNewExprEnv, (AnyNewExpr)newExpr2));
-        NewExpr newExpr3 = this$0.newExprStringCodingResult;
-        Intrinsics.checkNotNullExpressionValue((Object)newExpr3, (String)"newExprStringCodingResult");
-        CompanionV newResult = jOperatorV.markOfNewExpr((AnyNewExpr)newExpr3).pop();
-        AbstractHeapFactory abstractHeapFactory3 = $this_evalCall.getHf();
-        HeapValuesEnv heapValuesEnv2 = (HeapValuesEnv)$this_evalCall.getEnv();
-        AbstractHeapFactory abstractHeapFactory4 = $this_evalCall.getHf();
-        AnyNewExprEnv anyNewExprEnv2 = $this_evalCall.getNewEnv();
-        NewArrayExpr newArrayExpr = this$0.newValueExpr;
-        Intrinsics.checkNotNullExpressionValue((Object)newArrayExpr, (String)"newValueExpr");
-        JOperatorV jOperatorV2 = abstractHeapFactory3.push(heapValuesEnv2, abstractHeapFactory4.anyNewVal(anyNewExprEnv2, (AnyNewExpr)newArrayExpr));
-        NewArrayExpr newArrayExpr2 = this$0.newValueExpr;
-        Intrinsics.checkNotNullExpressionValue((Object)newArrayExpr2, (String)"newValueExpr");
-        CompanionV newValue = jOperatorV2.markOfNewExpr((AnyNewExpr)newArrayExpr2).pop();
-        AbstractHeapFactory abstractHeapFactory5 = $this_evalCall.getHf();
-        HeapValuesEnv heapValuesEnv3 = (HeapValuesEnv)$this_evalCall.getEnv();
-        AbstractHeapFactory abstractHeapFactory6 = $this_evalCall.getHf();
-        Constant constant = (Constant)WString.Companion.getLATIN1();
-        ByteType byteType = G.v().soot_ByteType();
-        Intrinsics.checkNotNullExpressionValue((Object)byteType, (String)"soot_ByteType(...)");
-        CompanionV newCoder = JOperatorV.DefaultImpls.markOfConstant$default((JOperatorV)abstractHeapFactory5.push(heapValuesEnv3, abstractHeapFactory6.newConstVal(constant, (Type)byteType)), (Constant)((Constant)WString.Companion.getLATIN1()), null, (int)2, null).pop();
-        IHeapValues arraySize = $this_evalCall.getHf().push((HeapValuesEnv)$this_evalCall.getEnv(), $this_evalCall.getHf().toConstVal((Object)newValueArray.length)).markArraySizeOf(companionV).popHV();
-        ArraySpace newArray = ArraySpace.Companion.v($this_evalCall.getHf(), (HeapValuesEnv)$this_evalCall.getEnv(), companionV, (Number[])ArraysKt.toTypedArray((byte[])newValueArray), $this_evalCall.getHf().getVg().getBYTE_ARRAY_TYPE(), arraySize);
-        $this_evalCall.getOut().setValueData((HeapValuesEnv)$this_evalCall.getEnv(), newValue.getValue(), (Object)BuiltInModelT.Array, (IData)newArray);
-        IFact.Builder builder2 = $this_evalCall.getOut();
-        Intrinsics.checkNotNull((Object)builder2, (String)"null cannot be cast to non-null type cn.sast.dataflow.interprocedural.check.PointsToGraphBuilder");
-        FieldUtil fieldUtil = FieldUtil.INSTANCE;
-        SootField field$iv = this$0.stringCodingResultValueField;
-        boolean $i$f$of = false;
-        ((PointsToGraphBuilder)builder2).assignField((HeapValuesEnv)$this_evalCall.getEnv(), $this_evalCall.getHf().empty().plus(newResult), (JFieldType)new JSootFieldType(field$iv), $this_evalCall.getHf().empty().plus(newValue), false);
-        IFact.Builder builder3 = $this_evalCall.getOut();
-        Intrinsics.checkNotNull((Object)builder3, (String)"null cannot be cast to non-null type cn.sast.dataflow.interprocedural.check.PointsToGraphBuilder");
-        FieldUtil this_$iv = FieldUtil.INSTANCE;
-        field$iv = this$0.stringCodingResultCoderField;
-        $i$f$of = false;
-        ((PointsToGraphBuilder)builder3).assignField((HeapValuesEnv)$this_evalCall.getEnv(), $this_evalCall.getHf().empty().plus(newResult), (JFieldType)new JSootFieldType(field$iv), $this_evalCall.getHf().empty().plus(newCoder), false);
+        
+        // Create result object
+        AbstractHeapFactory hf = call.getHf();
+        HeapValuesEnv env = (HeapValuesEnv) call.getEnv();
+        AnyNewExprEnv newEnv = call.getNewEnv();
+        
+        CompanionV newResult = hf.push(env, hf.anyNewVal(newEnv, coding.newExprStringCodingResult))
+            .markOfNewExpr(coding.newExprStringCodingResult)
+            .pop();
+            
+        // Create value array
+        CompanionV newValue = hf.push(env, hf.anyNewVal(newEnv, coding.newValueExpr))
+            .markOfNewExpr(coding.newValueExpr)
+            .pop();
+            
+        // Create coder constant
+        CompanionV newCoder = hf.push(env, hf.newConstVal(WString.Companion.getLATIN1(), G.v().soot_ByteType()))
+            .pop();
+            
+        // Create array space
+        IHeapValues arraySize = hf.push(env, hf.toConstVal(newValueArray.length))
+            .markArraySizeOf(ba)
+            .popHV();
+            
+        ArraySpace newArray = ArraySpace.Companion.v(
+            hf, env, ba, 
+            ArraysKt.toTypedArray(newValueArray), 
+            hf.getVg().getBYTE_ARRAY_TYPE(), 
+            arraySize);
+            
+        call.getOut().setValueData(env, newValue.getValue(), BuiltInModelT.Array, newArray);
+        
+        // Assign fields
+        PointsToGraphBuilder builder = (PointsToGraphBuilder) call.getOut();
+        builder.assignField(env, 
+            hf.empty().plus(newResult), 
+            new JSootFieldType(coding.stringCodingResultValueField), 
+            hf.empty().plus(newValue), 
+            false);
+            
+        builder.assignField(env, 
+            hf.empty().plus(newResult), 
+            new JSootFieldType(coding.stringCodingResultCoderField), 
+            hf.empty().plus(newCoder), 
+            false);
+            
         res.add(newResult);
         return true;
     }
-
-    private static final Unit register$lambda$3(WStringCoding this$0, CalleeCBImpl.EvalCall $this$evalCall) {
-        Intrinsics.checkNotNullParameter((Object)$this$evalCall, (String)"$this$evalCall");
-        IHeapValues baP = $this$evalCall.arg(0);
-        IHeapValues offP = $this$evalCall.arg(1);
-        IHeapValues lenP = $this$evalCall.arg(2);
-        IHeapValues[] iHeapValuesArray = new IHeapValues[]{baP, offP, lenP};
-        IOpCalculator decodeOp = $this$evalCall.getHf().resolveOp((HeapValuesEnv)$this$evalCall.getEnv(), iHeapValuesArray);
-        decodeOp.resolve((arg_0, arg_1, arg_2) -> WStringCoding.register$lambda$3$lambda$2($this$evalCall, this$0, arg_0, arg_1, arg_2));
-        RefType refType = this$0.StringCodingResultType;
-        Intrinsics.checkNotNullExpressionValue((Object)refType, (String)"StringCodingResultType");
-        decodeOp.putSummaryIfNotConcrete((Type)refType, (Object)"return");
-        $this$evalCall.setReturn(decodeOp.getRes().build());
-        return Unit.INSTANCE;
-    }
 }
-

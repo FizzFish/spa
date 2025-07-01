@@ -1,50 +1,38 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  cn.sast.framework.graph.PseudoTopologicalOrderer
- *  cn.sast.framework.graph.PseudoTopologicalOrderer$ReverseOrderBuilder
- *  soot.toolkits.graph.DirectedGraph
- *  soot.toolkits.graph.Orderer
- */
 package cn.sast.framework.graph;
 
-import cn.sast.framework.graph.PseudoTopologicalOrderer;
-import java.util.List;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.Orderer;
+import java.util.List;
 
-public class PseudoTopologicalOrderer<N>
-implements Orderer<N> {
+public class PseudoTopologicalOrderer<N> implements Orderer<N> {
     public static final boolean REVERSE = true;
-    private boolean mIsReversed = false;
+    private boolean reversed;
 
     public PseudoTopologicalOrderer() {
     }
 
-    public List<N> newList(DirectedGraph<N> g2, boolean reverse) {
-        this.mIsReversed = reverse;
-        return new ReverseOrderBuilder(g2).computeOrder(!reverse);
+    public List<N> newList(DirectedGraph<N> graph, boolean reverse) {
+        this.reversed = reverse;
+        return new ReverseOrderBuilder<>(graph).computeOrder(!reverse);
     }
 
     @Deprecated
-    public PseudoTopologicalOrderer(boolean isReversed) {
-        this.mIsReversed = isReversed;
+    public PseudoTopologicalOrderer(boolean reversed) {
+        this.reversed = reversed;
     }
 
     @Deprecated
-    public List<N> newList(DirectedGraph<N> g2) {
-        return new ReverseOrderBuilder(g2).computeOrder(!this.mIsReversed);
+    public List<N> newList(DirectedGraph<N> graph) {
+        return new ReverseOrderBuilder<>(graph).computeOrder(!this.reversed);
     }
 
     @Deprecated
-    public void setReverseOrder(boolean isReversed) {
-        this.mIsReversed = isReversed;
+    public void setReverseOrder(boolean reversed) {
+        this.reversed = reversed;
     }
 
     @Deprecated
     public boolean isReverseOrder() {
-        return this.mIsReversed;
+        return reversed;
     }
 }
-

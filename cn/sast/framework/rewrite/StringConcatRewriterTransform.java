@@ -1,35 +1,36 @@
 /*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  cn.sast.framework.rewrite.StringConcatRewriterPlugin
- *  cn.sast.framework.rewrite.StringConcatRewriterTransform
- *  org.slf4j.Logger
- *  org.slf4j.LoggerFactory
- *  soot.Body
- *  soot.BodyTransformer
- *  soot.options.Options
+ * Copyright (c) 2022, SAP SE. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ *
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.
+ *
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
  */
 package cn.sast.framework.rewrite;
 
-import cn.sast.framework.rewrite.StringConcatRewriterPlugin;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.options.Options;
 
-public class StringConcatRewriterTransform
-extends BodyTransformer {
-    public static final String phase = "jb.rewriter";
+import java.util.Map;
+
+public class StringConcatRewriterTransform extends BodyTransformer {
+    public static final String PHASE = "jb.rewriter";
     private static final Logger logger = LoggerFactory.getLogger(StringConcatRewriterTransform.class);
 
-    protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+    @Override
+    protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
         if (Options.v().verbose()) {
-            logger.debug("[" + b.getMethod().getName() + "] Rewrite string concat...");
+            logger.debug("[{}] Rewrite string concat...", body.getMethod().getName());
         }
-        new StringConcatRewriterPlugin().transformStringConcats(b);
+        new StringConcatRewriterPlugin().transformStringConcats(body);
     }
 }
-

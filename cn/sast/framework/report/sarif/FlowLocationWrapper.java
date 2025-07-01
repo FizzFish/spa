@@ -1,87 +1,53 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  cn.sast.framework.report.sarif.FlowLocation
- *  cn.sast.framework.report.sarif.FlowLocation$$serializer
- *  cn.sast.framework.report.sarif.FlowLocationWrapper
- *  cn.sast.framework.report.sarif.FlowLocationWrapper$$serializer
- *  cn.sast.framework.report.sarif.FlowLocationWrapper$Companion
- *  kotlin.Metadata
- *  kotlin.jvm.JvmStatic
- *  kotlin.jvm.internal.Intrinsics
- *  kotlinx.serialization.Serializable
- *  kotlinx.serialization.SerializationStrategy
- *  kotlinx.serialization.descriptors.SerialDescriptor
- *  kotlinx.serialization.encoding.CompositeEncoder
- *  kotlinx.serialization.internal.PluginExceptionsKt
- *  kotlinx.serialization.internal.SerializationConstructorMarker
- *  org.jetbrains.annotations.NotNull
- *  org.jetbrains.annotations.Nullable
- */
 package cn.sast.framework.report.sarif;
 
-import cn.sast.framework.report.sarif.FlowLocation;
-import cn.sast.framework.report.sarif.FlowLocation$;
-import cn.sast.framework.report.sarif.FlowLocationWrapper;
-import cn.sast.framework.report.sarif.FlowLocationWrapper$;
-import kotlin.Metadata;
-import kotlin.jvm.JvmStatic;
-import kotlin.jvm.internal.Intrinsics;
 import kotlinx.serialization.Serializable;
 import kotlinx.serialization.SerializationStrategy;
 import kotlinx.serialization.descriptors.SerialDescriptor;
 import kotlinx.serialization.encoding.CompositeEncoder;
-import kotlinx.serialization.internal.PluginExceptionsKt;
-import kotlinx.serialization.internal.SerializationConstructorMarker;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Serializable
-@Metadata(mv={2, 0, 0}, k=1, xi=48, d1={"\u0000D\n\u0002\u0018\u0002\n\u0002\u0010\u0000\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0010\b\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0006\n\u0002\u0010\u000b\n\u0002\b\u0003\n\u0002\u0010\u000e\n\u0000\n\u0002\u0010\u0002\n\u0002\b\u0002\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0004\b\u0087\b\u0018\u0000 \u001e2\u00020\u0001:\u0002\u001d\u001eB\u000f\u0012\u0006\u0010\u0002\u001a\u00020\u0003\u00a2\u0006\u0004\b\u0004\u0010\u0005B%\b\u0010\u0012\u0006\u0010\u0006\u001a\u00020\u0007\u0012\b\u0010\u0002\u001a\u0004\u0018\u00010\u0003\u0012\b\u0010\b\u001a\u0004\u0018\u00010\t\u00a2\u0006\u0004\b\u0004\u0010\nJ\t\u0010\r\u001a\u00020\u0003H\u00c6\u0003J\u0013\u0010\u000e\u001a\u00020\u00002\b\b\u0002\u0010\u0002\u001a\u00020\u0003H\u00c6\u0001J\u0013\u0010\u000f\u001a\u00020\u00102\b\u0010\u0011\u001a\u0004\u0018\u00010\u0001H\u00d6\u0003J\t\u0010\u0012\u001a\u00020\u0007H\u00d6\u0001J\t\u0010\u0013\u001a\u00020\u0014H\u00d6\u0001J%\u0010\u0015\u001a\u00020\u00162\u0006\u0010\u0017\u001a\u00020\u00002\u0006\u0010\u0018\u001a\u00020\u00192\u0006\u0010\u001a\u001a\u00020\u001bH\u0001\u00a2\u0006\u0002\b\u001cR\u0011\u0010\u0002\u001a\u00020\u0003\u00a2\u0006\b\n\u0000\u001a\u0004\b\u000b\u0010\f\u00a8\u0006\u001f"}, d2={"Lcn/sast/framework/report/sarif/FlowLocationWrapper;", "", "location", "Lcn/sast/framework/report/sarif/FlowLocation;", "<init>", "(Lcn/sast/framework/report/sarif/FlowLocation;)V", "seen0", "", "serializationConstructorMarker", "Lkotlinx/serialization/internal/SerializationConstructorMarker;", "(ILcn/sast/framework/report/sarif/FlowLocation;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V", "getLocation", "()Lcn/sast/framework/report/sarif/FlowLocation;", "component1", "copy", "equals", "", "other", "hashCode", "toString", "", "write$Self", "", "self", "output", "Lkotlinx/serialization/encoding/CompositeEncoder;", "serialDesc", "Lkotlinx/serialization/descriptors/SerialDescriptor;", "write$Self$corax_framework", "$serializer", "Companion", "corax-framework"})
 public final class FlowLocationWrapper {
-    @NotNull
-    public static final Companion Companion = new Companion(null);
     @NotNull
     private final FlowLocation location;
 
     public FlowLocationWrapper(@NotNull FlowLocation location) {
-        Intrinsics.checkNotNullParameter((Object)location, (String)"location");
+        if (location == null) {
+            throw new IllegalArgumentException("location cannot be null");
+        }
         this.location = location;
     }
 
     @NotNull
-    public final FlowLocation getLocation() {
-        return this.location;
+    public FlowLocation getLocation() {
+        return location;
     }
 
     @NotNull
-    public final FlowLocation component1() {
-        return this.location;
+    public FlowLocation component1() {
+        return location;
     }
 
     @NotNull
-    public final FlowLocationWrapper copy(@NotNull FlowLocation location) {
-        Intrinsics.checkNotNullParameter((Object)location, (String)"location");
+    public FlowLocationWrapper copy(@NotNull FlowLocation location) {
+        if (location == null) {
+            throw new IllegalArgumentException("location cannot be null");
+        }
         return new FlowLocationWrapper(location);
     }
 
-    public static /* synthetic */ FlowLocationWrapper copy$default(FlowLocationWrapper flowLocationWrapper, FlowLocation flowLocation, int n, Object object) {
-        if ((n & 1) != 0) {
-            flowLocation = flowLocationWrapper.location;
-        }
-        return flowLocationWrapper.copy(flowLocation);
-    }
-
-    @NotNull
+    @Override
     public String toString() {
-        return "FlowLocationWrapper(location=" + this.location + ")";
+        return "FlowLocationWrapper(location=" + location + ")";
     }
 
+    @Override
     public int hashCode() {
-        return this.location.hashCode();
+        return location.hashCode();
     }
 
+    @Override
     public boolean equals(@Nullable Object other) {
         if (this == other) {
             return true;
@@ -89,20 +55,12 @@ public final class FlowLocationWrapper {
         if (!(other instanceof FlowLocationWrapper)) {
             return false;
         }
-        FlowLocationWrapper flowLocationWrapper = (FlowLocationWrapper)other;
-        return Intrinsics.areEqual((Object)this.location, (Object)flowLocationWrapper.location);
+        FlowLocationWrapper that = (FlowLocationWrapper) other;
+        return location.equals(that.location);
     }
 
     @JvmStatic
-    public static final /* synthetic */ void write$Self$corax_framework(FlowLocationWrapper self, CompositeEncoder output, SerialDescriptor serialDesc) {
-        output.encodeSerializableElement(serialDesc, 0, (SerializationStrategy)FlowLocation$.serializer.INSTANCE, (Object)self.location);
-    }
-
-    public /* synthetic */ FlowLocationWrapper(int seen0, FlowLocation location, SerializationConstructorMarker serializationConstructorMarker) {
-        if (1 != (1 & seen0)) {
-            PluginExceptionsKt.throwMissingFieldException((int)seen0, (int)1, (SerialDescriptor)$serializer.INSTANCE.getDescriptor());
-        }
-        this.location = location;
+    public static void write$Self$corax_framework(FlowLocationWrapper self, CompositeEncoder output, SerialDescriptor serialDesc) {
+        output.encodeSerializableElement(serialDesc, 0, FlowLocation$.serializer.INSTANCE, self.location);
     }
 }
-

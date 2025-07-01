@@ -1,16 +1,13 @@
 /*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  cn.sast.idfa.analysis.DataFlowSolution
+ * Copyright (c) 2022, SAP SE. All rights reserved.
  */
 package cn.sast.idfa.analysis;
 
 import java.util.Map;
 
 public class DataFlowSolution<N, A> {
-    private Map<N, A> inValues;
-    private Map<N, A> outValues;
+    private final Map<N, A> inValues;
+    private final Map<N, A> outValues;
 
     public DataFlowSolution(Map<N, A> inValues, Map<N, A> outValues) {
         this.inValues = inValues;
@@ -18,11 +15,10 @@ public class DataFlowSolution<N, A> {
     }
 
     public A getValueBefore(N node) {
-        return (A)this.inValues.get(node);
+        return inValues.get(node);
     }
 
     public A getValueAfter(N node) {
-        return (A)this.outValues.get(node);
+        return outValues.get(node);
     }
 }
-

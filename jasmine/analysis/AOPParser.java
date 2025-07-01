@@ -1,120 +1,16 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  analysis.AOPAnalysis
- *  analysis.AOPParser
- *  analysis.Config
- *  analysis.CreateEdge
- *  analysis.Implement
- *  bean.AOPTargetModel
- *  bean.AspectModel
- *  bean.InsertMethod
- *  enums.AdviceEnum
- *  mock.GenerateSyntheticClass
- *  mock.GenerateSyntheticClassImpl
- *  org.aspectj.weaver.UnresolvedType
- *  org.aspectj.weaver.patterns.AndPointcut
- *  org.aspectj.weaver.patterns.AnnotationPointcut
- *  org.aspectj.weaver.patterns.AnnotationTypePattern
- *  org.aspectj.weaver.patterns.AnyWithAnnotationTypePattern
- *  org.aspectj.weaver.patterns.ArgsPointcut
- *  org.aspectj.weaver.patterns.ExactAnnotationTypePattern
- *  org.aspectj.weaver.patterns.KindedPointcut
- *  org.aspectj.weaver.patterns.NamePattern
- *  org.aspectj.weaver.patterns.OrPointcut
- *  org.aspectj.weaver.patterns.PatternParser
- *  org.aspectj.weaver.patterns.Pointcut
- *  org.aspectj.weaver.patterns.SignaturePattern
- *  org.aspectj.weaver.patterns.TypePattern
- *  org.aspectj.weaver.patterns.WildAnnotationTypePattern
- *  org.aspectj.weaver.patterns.WildTypePattern
- *  org.aspectj.weaver.patterns.WithinAnnotationPointcut
- *  org.aspectj.weaver.patterns.WithinPointcut
- *  soot.Body
- *  soot.Local
- *  soot.Modifier
- *  soot.RefType
- *  soot.SootClass
- *  soot.SootMethod
- *  soot.Type
- *  soot.Unit
- *  soot.UnitPatchingChain
- *  soot.Value
- *  soot.VoidType
- *  soot.jimple.Jimple
- *  soot.jimple.JimpleBody
- *  soot.jimple.VirtualInvokeExpr
- *  soot.jimple.internal.JReturnStmt
- *  soot.jimple.internal.JReturnVoidStmt
- *  soot.tagkit.AnnotationElem
- *  soot.tagkit.AnnotationIntElem
- *  soot.tagkit.AnnotationTag
- *  soot.tagkit.VisibilityAnnotationTag
- *  soot.util.Chain
- *  utils.BaseBodyGenerator
- *  utils.BaseBodyGeneratorFactory
- *  utils.INewUnits
- *  utils.JimpleUtils
- *  utils.NewUnits$BeforeUnit
- *  utils.NewUnitsAtFirstImmediately
- *  utils.Ref
- */
-package analysis;
+package jasmine.analysis;
 
-import analysis.AOPAnalysis;
-import analysis.Config;
-import analysis.CreateEdge;
-import analysis.Implement;
-import bean.AOPTargetModel;
-import bean.AspectModel;
-import bean.InsertMethod;
-import enums.AdviceEnum;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import mock.GenerateSyntheticClass;
-import mock.GenerateSyntheticClassImpl;
+import jasmine.bean.AOPTargetModel;
+import jasmine.bean.AspectModel;
+import jasmine.bean.InsertMethod;
+import jasmine.enums.AdviceEnum;
+import jasmine.mock.GenerateSyntheticClass;
+import jasmine.mock.GenerateSyntheticClassImpl;
 import org.aspectj.weaver.UnresolvedType;
-import org.aspectj.weaver.patterns.AndPointcut;
-import org.aspectj.weaver.patterns.AnnotationPointcut;
-import org.aspectj.weaver.patterns.AnnotationTypePattern;
-import org.aspectj.weaver.patterns.AnyWithAnnotationTypePattern;
-import org.aspectj.weaver.patterns.ArgsPointcut;
-import org.aspectj.weaver.patterns.ExactAnnotationTypePattern;
-import org.aspectj.weaver.patterns.KindedPointcut;
-import org.aspectj.weaver.patterns.NamePattern;
-import org.aspectj.weaver.patterns.OrPointcut;
-import org.aspectj.weaver.patterns.PatternParser;
-import org.aspectj.weaver.patterns.Pointcut;
-import org.aspectj.weaver.patterns.SignaturePattern;
-import org.aspectj.weaver.patterns.TypePattern;
-import org.aspectj.weaver.patterns.WildAnnotationTypePattern;
-import org.aspectj.weaver.patterns.WildTypePattern;
-import org.aspectj.weaver.patterns.WithinAnnotationPointcut;
-import org.aspectj.weaver.patterns.WithinPointcut;
-import soot.Body;
-import soot.Local;
-import soot.Modifier;
-import soot.RefType;
-import soot.SootClass;
-import soot.SootMethod;
-import soot.Type;
-import soot.Unit;
-import soot.UnitPatchingChain;
-import soot.Value;
-import soot.VoidType;
-import soot.jimple.Jimple;
+import org.aspectj.weaver.patterns.*;
+import soot.*;
 import soot.jimple.JimpleBody;
-import soot.jimple.VirtualInvokeExpr;
+import soot.jimple.NullConstant;
 import soot.jimple.internal.JReturnStmt;
 import soot.jimple.internal.JReturnVoidStmt;
 import soot.tagkit.AnnotationElem;
@@ -122,251 +18,314 @@ import soot.tagkit.AnnotationIntElem;
 import soot.tagkit.AnnotationTag;
 import soot.tagkit.VisibilityAnnotationTag;
 import soot.util.Chain;
-import utils.BaseBodyGenerator;
-import utils.BaseBodyGeneratorFactory;
-import utils.INewUnits;
-import utils.JimpleUtils;
-import utils.NewUnits;
-import utils.NewUnitsAtFirstImmediately;
-import utils.Ref;
+import jasmine.utils.JimpleUtils;
 
-/*
- * Exception performing whole class analysis ignored.
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**notification
+ * @ClassName AOPParser
+ * @Description Analysis of AOP function
  */
 public class AOPParser {
-    public static Map<String, AOPTargetModel> modelMap = new LinkedHashMap();
-    public static Map<String, SootClass> proxyMap = new LinkedHashMap();
-    public static Map<String, HashSet<String>> TargetToAdv = new LinkedHashMap();
+    public static Map<String, AOPTargetModel> modelMap = new HashMap<>();
+    public static Map<String, SootClass> proxyMap = new HashMap<>();
+
+    public static Map<String, HashSet<String>> TargetToAdv = new HashMap<>();
+    private final JimpleUtils jimpleUtils = new JimpleUtils();
     private GenerateSyntheticClass gsc = new GenerateSyntheticClassImpl();
 
+    /**
+     * Get all the aspect classes annotated with @Aspect
+     *
+     * @param sootClasses Collection of all Application classes in Soot
+     * @return List of aspect
+     */
     public List<AspectModel> getAllAspects(Set<SootClass> sootClasses) {
-        LinkedList<AspectModel> allAspects = new LinkedList<AspectModel>();
+        List<AspectModel> allAspects = new LinkedList<>();
         for (SootClass sootClass : sootClasses) {
             SootClass aspectClass = null;
             int order = Integer.MAX_VALUE;
-            VisibilityAnnotationTag annotationTags = (VisibilityAnnotationTag)sootClass.getTag("VisibilityAnnotationTag");
+            VisibilityAnnotationTag annotationTags = (VisibilityAnnotationTag) sootClass.getTag("VisibilityAnnotationTag");
             if (annotationTags != null && annotationTags.getAnnotations() != null) {
                 for (AnnotationTag annotation : annotationTags.getAnnotations()) {
                     if (annotation.getType().equals("Lorg/aspectj/lang/annotation/Aspect;")) {
                         aspectClass = sootClass;
                         continue;
                     }
-                    if (!annotation.getType().equals("Lorg/springframework/core/annotation/Order;")) continue;
-                    for (AnnotationElem elem : annotation.getElems()) {
-                        if (!(elem instanceof AnnotationIntElem)) continue;
-                        order = ((AnnotationIntElem)elem).getValue();
+                    if (annotation.getType().equals("Lorg/springframework/core/annotation/Order;")) {
+                        for (AnnotationElem elem : annotation.getElems()) {
+                            if (elem instanceof AnnotationIntElem) {
+                                order = ((AnnotationIntElem) elem).getValue();
+                            }
+                        }
                     }
                 }
             }
-            if (aspectClass == null) continue;
-            allAspects.add(new AspectModel(aspectClass, order));
+
+            if (aspectClass != null) {
+                allAspects.add(new AspectModel(aspectClass, order));
+            }
         }
         return allAspects;
     }
 
+    /**
+     * Process different pointcut expressions
+     *
+     * @param expression   pointcut expressions
+     * @param aspectMethod aspect method
+     */
     public void processDiffAopExp(String expression, SootMethod aspectMethod) {
         PatternParser parser = new PatternParser(expression);
         Pointcut pointcut = parser.parsePointcut();
         AOPParser aopParser = new AOPParser();
         for (SootClass sootClass : CreateEdge.allBeansAndInterfaces) {
             for (SootMethod targetMethod : sootClass.getMethods()) {
-                if (!aopParser.switchPoint(pointcut, aspectMethod, targetMethod)) continue;
-                this.savePointMethod(aspectMethod, sootClass, targetMethod);
+                if (aopParser.switchPoint(pointcut, aspectMethod, targetMethod)) {
+                    savePointMethod(aspectMethod, sootClass, targetMethod);
+                }
             }
         }
     }
 
+    /**
+     * Process different pointcut expressions
+     *
+     * @param pointcut     pointcut expressions
+     * @param aspectMethod aspect method
+     */
     public boolean switchPoint(Pointcut pointcut, SootMethod aspectMethod, SootMethod targetMethod) {
         boolean matched = false;
         switch (pointcut.getClass().getSimpleName()) {
-            case "WithinPointcut": {
-                WithinPointcut withinPointcut = (WithinPointcut)pointcut;
-                matched = this.withInProcess(withinPointcut, aspectMethod, targetMethod);
+            case "WithinPointcut":
+                WithinPointcut withinPointcut = (WithinPointcut) pointcut;
+                matched = withInProcess(withinPointcut, aspectMethod, targetMethod);
                 break;
-            }
-            case "KindedPointcut": {
-                KindedPointcut execPointcut = (KindedPointcut)pointcut;
-                matched = this.executionProcess(execPointcut, aspectMethod, targetMethod);
+            case "KindedPointcut":
+                KindedPointcut execPointcut = (KindedPointcut) pointcut;
+                matched = executionProcess(execPointcut, aspectMethod, targetMethod);
                 break;
-            }
-            case "ArgsPointcut": {
-                ArgsPointcut argsPointcut = (ArgsPointcut)pointcut;
-                matched = this.ArgsProcess(argsPointcut, aspectMethod, targetMethod);
+            case "ArgsPointcut":
+                ArgsPointcut argsPointcut = (ArgsPointcut) pointcut;
+                matched = ArgsProcess(argsPointcut, aspectMethod, targetMethod);
                 break;
-            }
-            case "AndPointcut": {
-                AndPointcut andPointcut = (AndPointcut)pointcut;
-                matched = this.andProcess(andPointcut, aspectMethod, targetMethod);
+            case "AndPointcut":
+                AndPointcut andPointcut = (AndPointcut) pointcut;
+                matched = andProcess(andPointcut, aspectMethod, targetMethod);
                 break;
-            }
-            case "OrPointcut": {
-                OrPointcut orPointcut = (OrPointcut)pointcut;
-                matched = this.orProcess(orPointcut, aspectMethod, targetMethod);
+            case "OrPointcut":
+                OrPointcut orPointcut = (OrPointcut) pointcut;
+                matched = orProcess(orPointcut, aspectMethod, targetMethod);
                 break;
-            }
-            case "AnnotationPointcut": {
-                AnnotationPointcut annotationPointcut = (AnnotationPointcut)pointcut;
-                matched = this.AnnoProcess(annotationPointcut, aspectMethod, targetMethod);
+            case "AnnotationPointcut":
+                AnnotationPointcut annotationPointcut = (AnnotationPointcut) pointcut;
+                matched = AnnoProcess(annotationPointcut, aspectMethod, targetMethod);
                 break;
-            }
-            case "WithinAnnotationPointcut": {
-                WithinAnnotationPointcut withinAnnotationPointcut = (WithinAnnotationPointcut)pointcut;
-                matched = this.withinAnnoProcess(withinAnnotationPointcut, aspectMethod, targetMethod);
-            }
+            case "WithinAnnotationPointcut":
+                WithinAnnotationPointcut withinAnnotationPointcut = (WithinAnnotationPointcut) pointcut;
+                matched = withinAnnoProcess(withinAnnotationPointcut, aspectMethod, targetMethod);
+                break;
         }
         return matched;
     }
 
     private boolean withinAnnoProcess(WithinAnnotationPointcut withinAnnotationPointcut, SootMethod aspectMethod, SootMethod targetMethod) {
-        VisibilityAnnotationTag classAnnotationTag;
         AnnotationTypePattern typePattern = withinAnnotationPointcut.getAnnotationTypePattern();
         String str = "";
         if (typePattern instanceof ExactAnnotationTypePattern) {
-            ExactAnnotationTypePattern ex = (ExactAnnotationTypePattern)typePattern;
+            ExactAnnotationTypePattern ex = (ExactAnnotationTypePattern) typePattern;
             UnresolvedType annotationType = ex.getAnnotationType();
             str = annotationType.getSignature();
         }
-        if ((classAnnotationTag = (VisibilityAnnotationTag)targetMethod.getDeclaringClass().getTag("VisibilityAnnotationTag")) != null && classAnnotationTag.getAnnotations() != null) {
+        VisibilityAnnotationTag classAnnotationTag = (VisibilityAnnotationTag) targetMethod.getDeclaringClass().getTag("VisibilityAnnotationTag");
+        if (classAnnotationTag != null && classAnnotationTag.getAnnotations() != null) {
             for (AnnotationTag annotation : classAnnotationTag.getAnnotations()) {
-                if (!annotation.getType().equals(str)) continue;
-                return true;
+                if (annotation.getType().equals(str)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
+    /**
+     * Process within expressions
+     *
+     * @param pointcut     pointcut expressions
+     * @param aspectMethod aspect method
+     */
     public boolean withInProcess(WithinPointcut pointcut, SootMethod aspectMethod, SootMethod targetMethod) {
         TypePattern typePattern = pointcut.getTypePattern();
-        Map dealWithinPointcut = AOPParser.dealWithinPointcut((TypePattern)typePattern);
-        Integer type = (Integer)dealWithinPointcut.get("type");
-        if (type != 1) {
-            if (type == 3) {
-                NamePattern[] namePatterns1 = (NamePattern[])dealWithinPointcut.get("pattern");
-                if (!this.clazzIsMatch(namePatterns1, targetMethod.getDeclaringClass().getName())) {
-                    return false;
-                }
-            } else if (type == 2) {
-                // empty if block
+        Map<String, Object> dealWithinPointcut = dealWithinPointcut(typePattern);
+        Integer type = (Integer) dealWithinPointcut.get("type");
+        if (type == 1) {
+        } else if (type == 3) {
+            NamePattern[] namePatterns1 = (NamePattern[]) dealWithinPointcut.get("pattern");
+            if (!clazzIsMatch(namePatterns1, targetMethod.getDeclaringClass().getName())) {
+                return false;
             }
+        } else if (type == 2) {
         }
         return true;
     }
 
+    /**
+     * Process args expressions
+     *
+     * @param pointcut     pointcut expressions
+     * @param aspectMethod aspect method
+     */
     public boolean ArgsProcess(ArgsPointcut pointcut, SootMethod aspectMethod, SootMethod targetMethod) {
         TypePattern[] typePatterns = pointcut.getArguments().getTypePatterns();
-        return this.isMethodParamMatches(typePatterns, targetMethod.getParameterTypes());
+        return isMethodParamMatches(typePatterns, targetMethod.getParameterTypes());
+
     }
 
+    /**
+     * Process execution expressions
+     *
+     * @param pointcut     pointcut expressions
+     * @param aspectMethod aspect method
+     */
     public boolean executionProcess(KindedPointcut pointcut, SootMethod aspectMethod, SootMethod targetMethod) {
-        WildTypePattern wildType;
-        NamePattern[] namePatterns;
-        boolean flag;
-        WildTypePattern wildType2;
-        NamePattern[] namePatterns2;
         SignaturePattern pattern = pointcut.getSignature();
         String modifier = pattern.getModifiers().toString();
         TypePattern declaringType = pattern.getDeclaringType();
         TypePattern returnType = pattern.getReturnType();
         NamePattern methodName = pattern.getName();
         TypePattern[] typePatterns = pattern.getParameterTypes().getTypePatterns();
-        if (declaringType instanceof WildTypePattern && !this.clazzIsMatch(namePatterns2 = (wildType2 = (WildTypePattern)declaringType).getNamePatterns(), targetMethod.getDeclaringClass().getName())) {
-            return false;
+        if (declaringType instanceof WildTypePattern) {
+            WildTypePattern wildType = (WildTypePattern) declaringType;
+            NamePattern[] namePatterns = wildType.getNamePatterns();
+            if (!clazzIsMatch(namePatterns, targetMethod.getDeclaringClass().getName())) {
+                return false;
+            }
         }
+
         int methodModifier = targetMethod.getModifiers();
+        boolean flag;
         switch (modifier) {
-            case "public": {
-                flag = Modifier.isPublic((int)methodModifier);
+            case "public":
+                flag = Modifier.isPublic(methodModifier);
                 break;
-            }
-            case "protected": {
-                flag = Modifier.isProtected((int)methodModifier);
+            case "protected":
+                flag = Modifier.isProtected(methodModifier);
                 break;
-            }
-            case "private": {
-                flag = Modifier.isPrivate((int)methodModifier);
+            case "private":
+                flag = Modifier.isPrivate(methodModifier);
                 break;
-            }
-            default: {
+            default:
                 flag = true;
+                break;
+        }
+
+        if (!flag || !methodName.matches(targetMethod.getName()) || targetMethod.getName().equals("<init>")
+                || targetMethod.getName().equals("callEntry_synthetic") || targetMethod.getName().equals("<clinit>")) {
+            return false;
+        }
+
+        if (returnType instanceof WildTypePattern) {
+            WildTypePattern wildType = (WildTypePattern) returnType;
+            NamePattern[] namePatterns = wildType.getNamePatterns();
+            if (clazzIsMatch(namePatterns, targetMethod.getReturnType().toString())) {
+                return false;
             }
         }
-        if (!flag || !methodName.matches(targetMethod.getName()) || targetMethod.getName().equals("<init>") || targetMethod.getName().equals(Config.CALL_ENTRY_NAME) || targetMethod.getName().equals("<clinit>")) {
-            return false;
-        }
-        if (returnType instanceof WildTypePattern && this.clazzIsMatch(namePatterns = (wildType = (WildTypePattern)returnType).getNamePatterns(), targetMethod.getReturnType().toString())) {
-            return false;
-        }
-        return this.isMethodParamMatches(typePatterns, targetMethod.getParameterTypes());
+
+        return isMethodParamMatches(typePatterns, targetMethod.getParameterTypes());
     }
 
+    /**
+     * Process annotation expressions
+     *
+     * @param pointcut     pointcut expressions
+     * @param aspectMethod aspect method
+     */
     public boolean AnnoProcess(AnnotationPointcut pointcut, SootMethod aspectMethod, SootMethod targetMethod) {
-        JimpleUtils jimpleUtils = Implement.jimpleUtils;
         String s = pointcut.getAnnotationTypePattern().getAnnotationType().toString();
         String annot = "";
-        for (Local local : jimpleUtils.getMethodBody(aspectMethod).getLocals()) {
-            if (!local.getName().equals(s)) continue;
-            String a = local.getType().toString();
-            String[] array = a.split("\\.");
-            annot = array[array.length - 1];
-            break;
+        for (Local local : aspectMethod.retrieveActiveBody().getLocals()) {
+            if (local.getName().equals(s)) {
+                String a = local.getType().toString();
+                String[] array = a.split("\\.");
+                annot = array[array.length-1];
+                break;
+            }
         }
         s = s.substring(s.lastIndexOf(".") + 1);
         boolean isclazzAnnoed = false;
-        VisibilityAnnotationTag classAnnotationTag = (VisibilityAnnotationTag)targetMethod.getDeclaringClass().getTag("VisibilityAnnotationTag");
+        VisibilityAnnotationTag classAnnotationTag = (VisibilityAnnotationTag) targetMethod.getDeclaringClass().getTag("VisibilityAnnotationTag");
         if (classAnnotationTag != null && classAnnotationTag.getAnnotations() != null) {
             for (AnnotationTag annotation : classAnnotationTag.getAnnotations()) {
                 String c = annotation.getType().substring(annotation.getType().lastIndexOf("/") + 1, annotation.getType().length() - 1);
-                if (!c.equals(s)) continue;
-                isclazzAnnoed = true;
-                break;
+                if (c.equals(s)) {
+                    isclazzAnnoed = true;
+                    break;
+                }
             }
         }
         if (isclazzAnnoed) {
             return true;
-        }
-        VisibilityAnnotationTag annotationTags = (VisibilityAnnotationTag)targetMethod.getTag("VisibilityAnnotationTag");
-        if (annotationTags != null && annotationTags.getAnnotations() != null) {
-            for (AnnotationTag annotation : annotationTags.getAnnotations()) {
-                String c = annotation.getType().substring(annotation.getType().lastIndexOf("/") + 1, annotation.getType().length() - 1);
-                if (!c.equals(s) && !c.equals(annot)) continue;
-                return true;
+        } else {
+            VisibilityAnnotationTag annotationTags = (VisibilityAnnotationTag) targetMethod.getTag("VisibilityAnnotationTag");
+            if (annotationTags != null && annotationTags.getAnnotations() != null) {
+                for (AnnotationTag annotation : annotationTags.getAnnotations()) {
+                    String c = annotation.getType().substring(annotation.getType().lastIndexOf("/") + 1, annotation.getType().length() - 1);
+                    if (c.equals(s) || c.equals(annot)) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
     }
 
+    /**
+     * Process or expressions
+     *
+     * @param pointcut     pointcut expressions
+     * @param aspectMethod aspect method
+     */
     public boolean orProcess(OrPointcut pointcut, SootMethod aspectMethod, SootMethod targetMethod) {
         Pointcut leftPoint = pointcut.getLeft();
         Pointcut rightPoint = pointcut.getRight();
-        return this.switchPoint(leftPoint, aspectMethod, targetMethod) || this.switchPoint(rightPoint, aspectMethod, targetMethod);
+        return switchPoint(leftPoint, aspectMethod, targetMethod) || switchPoint(rightPoint, aspectMethod, targetMethod);
     }
 
     public boolean andProcess(AndPointcut pointcut, SootMethod aspectMethod, SootMethod targetMethod) {
         Pointcut leftPoint = pointcut.getLeft();
         Pointcut rightPoint = pointcut.getRight();
-        return this.switchPoint(leftPoint, aspectMethod, targetMethod) && this.switchPoint(rightPoint, aspectMethod, targetMethod);
+        return switchPoint(leftPoint, aspectMethod, targetMethod) && switchPoint(rightPoint, aspectMethod, targetMethod);
     }
 
+    /**
+     * Add the matching advice to the list corresponding to the target object
+     *
+     * @param allAdvices all advices
+     */
     public void addAdviceToTarget(List<AspectModel> allAdvices) {
-        LinkedHashMap<String, AOPTargetModel> tmp = new LinkedHashMap<String, AOPTargetModel>();
+        Map<String, AOPTargetModel> tmp = new HashMap<>();
         for (AspectModel adviceModel : allAdvices) {
-            for (Map.Entry stringAOPTargetModelEntry : modelMap.entrySet()) {
+            for (Map.Entry<String, AOPTargetModel> stringAOPTargetModelEntry : AOPParser.modelMap.entrySet()) {
+                AOPTargetModel aopTargetModel = stringAOPTargetModelEntry.getValue();
+                String key = stringAOPTargetModelEntry.getKey();
                 SootClass proxyClass;
-                AOPTargetModel aopTargetModel = (AOPTargetModel)stringAOPTargetModelEntry.getValue();
-                String key2 = (String)stringAOPTargetModelEntry.getKey();
                 if (proxyMap.containsKey(aopTargetModel.getClassName())) {
-                    proxyClass = (SootClass)proxyMap.get(aopTargetModel.getClassName());
+                    proxyClass = proxyMap.get(aopTargetModel.getClassName());
                 } else {
                     if (aopTargetModel.getSootClass().isAbstract()) {
-                        tmp.put(key2, aopTargetModel);
-                        continue;
+                        return;
                     }
-                    proxyClass = this.gsc.generateProxy(aopTargetModel.getSootClass());
+                    proxyClass = gsc.generateProxy(aopTargetModel.getSootClass());
                     proxyMap.put(aopTargetModel.getClassName(), proxyClass);
                 }
                 SootMethod superMethod = aopTargetModel.getSootMethod();
-                if (superMethod.isStatic() || superMethod.isPrivate() || superMethod.isFinal() || superMethod.isConstructor() || superMethod.isStaticInitializer()) {
-                    tmp.put(key2, aopTargetModel);
+                if (superMethod.isStatic() || superMethod.isPrivate()
+                        || superMethod.isFinal() || superMethod.getName().contains("<init>")
+                        || superMethod.getName().contains("<clinit>")) {
+                    tmp.put(key, aopTargetModel);
                     continue;
                 }
                 SootMethod proxyMethod = proxyClass.getMethod(aopTargetModel.getSootMethod().getSubSignature());
@@ -374,12 +333,13 @@ public class AOPParser {
                 aopTargetModel.setProxyClassName(proxyClass.getName());
                 aopTargetModel.setProxyMethod(proxyMethod);
                 aopTargetModel.setProxyMethodName(proxyMethod.getSignature());
-                if (!TargetToAdv.containsKey(key2) || !((HashSet)TargetToAdv.get(key2)).contains(adviceModel.getSootMethod().getSignature())) continue;
-                aopTargetModel.addAdvice(adviceModel);
+                if (TargetToAdv.containsKey(key) && TargetToAdv.get(key).contains(adviceModel.getSootMethod().getSignature())) {
+                    aopTargetModel.addAdvice(adviceModel);
+                }
             }
         }
         for (String s : tmp.keySet()) {
-            modelMap.remove(s);
+            AOPParser.modelMap.remove(s);
         }
     }
 
@@ -393,22 +353,29 @@ public class AOPParser {
     }
 
     private void savePointMethod(SootMethod aspectMethod, SootClass sootClass, SootMethod method) {
-        if (method.getName().equals("<init>") || method.getName().equals(Config.CALL_ENTRY_NAME) || method.getName().equals("<clinit>")) {
+        if (method.getName().equals("<init>")
+                || method.getName().equals("callEntry_synthetic") || method.getName().equals("<clinit>")) {
             return;
         }
         if (sootClass.isInterface()) {
-            sootClass = (SootClass)CreateEdge.interfaceToBeans.get(sootClass.getName());
+            sootClass = CreateEdge.interfaceToBeans.get(sootClass.getName());
             method = sootClass.getMethodUnsafe(method.getSubSignature());
         }
         if (method == null) {
             return;
         }
         String methodSign = method.getSignature();
-        HashSet tmp = TargetToAdv.containsKey(methodSign) ? (HashSet)TargetToAdv.get(methodSign) : new LinkedHashSet();
+        HashSet<String> tmp;
+        if (TargetToAdv.containsKey(methodSign)) {
+            tmp = TargetToAdv.get(methodSign);
+        } else {
+            tmp = new HashSet<>();
+        }
         tmp.add(aspectMethod.getSignature());
         TargetToAdv.put(methodSign, tmp);
+
         if (!modelMap.containsKey(methodSign)) {
-            AOPTargetModel atm = this.getAopTargetInstance(sootClass, method);
+            AOPTargetModel atm = getAopTargetInstance(sootClass, method);
             modelMap.put(methodSign, atm);
         }
     }
@@ -424,20 +391,17 @@ public class AOPParser {
             if (m1.find()) {
                 sb.append(namePattern.toString());
                 sb.append("\\.");
-                continue;
-            }
-            if (m2.find()) {
+            } else if (m2.find()) {
                 sb.append("([a-z|A-Z|_]+[0-9]*)\\.");
-                continue;
+            } else if (namePattern.toString().equals("")) {
+                sb.append("(((\\D+)(\\w*)\\.)+)?");
             }
-            if (!namePattern.toString().equals("")) continue;
-            sb.append("(((\\D+)(\\w*)\\.)+)?");
         }
         String res = sb.toString();
         if (res.lastIndexOf(".") == res.length() - 1) {
             res = res.substring(0, res.lastIndexOf("\\."));
         }
-        res = res + "$";
+        res += "$";
         Pattern compile = Pattern.compile(res);
         Matcher matcher = compile.matcher(path);
         return matcher.find();
@@ -445,386 +409,533 @@ public class AOPParser {
 
     public boolean isMethodParamMatches(TypePattern[] typePatterns, List<Type> parameterTypes) {
         boolean ismatch = false;
+
         if (parameterTypes.size() >= typePatterns.length) {
             if (parameterTypes.size() == 0) {
                 ismatch = true;
             } else {
-                for (int i = 0; i < typePatterns.length; ++i) {
+                for (int i = 0; i < typePatterns.length; i++) {
                     String tmptype = typePatterns[i].toString();
-                    if (i == typePatterns.length - 1 && typePatterns.length == parameterTypes.size() && ("..".equals(tmptype) || parameterTypes.get(i).toString().contains(tmptype))) {
-                        ismatch = true;
+                    if (i == (typePatterns.length - 1) && typePatterns.length == parameterTypes.size()) {
+                        if ("..".equals(tmptype) || parameterTypes.get(i).toString().contains(tmptype)) {
+                            ismatch = true;
+                        }
                     }
-                    if ("*".equals(tmptype)) continue;
+                    if ("*".equals(tmptype)) {
+                        continue;
+                    }
                     if ("..".equals(tmptype)) {
                         ismatch = true;
-                    } else {
-                        if (parameterTypes.get(i).toString().contains(tmptype)) continue;
-                        ismatch = false;
+                        break;
                     }
-                    break;
+                    if (!parameterTypes.get(i).toString().contains(tmptype)) {
+                        ismatch = false;
+                        break;
+                    }
+
                 }
             }
+
         } else {
             int i;
-            for (i = 0; i < parameterTypes.size(); ++i) {
+            for (i = 0; i < parameterTypes.size(); i++) {
                 String tmptype = typePatterns[i].toString();
-                if ("*".equals(tmptype)) continue;
+                if ("*".equals(tmptype)) {
+                    continue;
+                }
                 if ("..".equals(tmptype)) {
                     ismatch = true;
                     break;
                 }
-                if (!parameterTypes.get(i).toString().contains(tmptype)) break;
+                if (!parameterTypes.get(i).toString().contains(tmptype)) {
+                    break;
+                }
             }
             if (typePatterns.length - i == 1 && "..".equals(typePatterns[typePatterns.length - 1].toString())) {
                 ismatch = true;
             }
+
         }
         return ismatch;
+
     }
 
     public static Map<String, Object> dealWithinPointcut(TypePattern typePattern) {
-        LinkedHashMap<String, Object> res = new LinkedHashMap<String, Object>();
+        Map<String, Object> res = new HashMap<>();
+        // 1 means with "+" matching subtype
+        // 2 means with "@" matching annotation
+        // 3 means normal matching class
         if (typePattern.isIncludeSubtypes()) {
-            WildTypePattern wildTypePattern = (WildTypePattern)typePattern;
+            WildTypePattern wildTypePattern = (WildTypePattern) typePattern;
             NamePattern[] namePatterns = wildTypePattern.getNamePatterns();
             res.put("pattern", namePatterns);
             res.put("type", 1);
             return res;
+        } else {
+            if (typePattern instanceof AnyWithAnnotationTypePattern) {
+                AnyWithAnnotationTypePattern awatp = (AnyWithAnnotationTypePattern) typePattern;
+                WildAnnotationTypePattern wildAnnotationTypePattern = (WildAnnotationTypePattern) awatp.getAnnotationTypePattern();
+                WildTypePattern wildTypePattern = (WildTypePattern) wildAnnotationTypePattern.getTypePattern();
+                NamePattern[] namePatterns = wildTypePattern.getNamePatterns();
+                res.put("pattern", namePatterns);
+                res.put("type", 2);
+                return res;
+            } else {
+                WildTypePattern wildTypePattern = (WildTypePattern) typePattern;
+                NamePattern[] namePatterns = wildTypePattern.getNamePatterns();
+                res.put("pattern", namePatterns);
+                res.put("type", 3);
+            }
         }
-        if (typePattern instanceof AnyWithAnnotationTypePattern) {
-            AnyWithAnnotationTypePattern awatp = (AnyWithAnnotationTypePattern)typePattern;
-            WildAnnotationTypePattern wildAnnotationTypePattern = (WildAnnotationTypePattern)awatp.getAnnotationTypePattern();
-            WildTypePattern wildTypePattern = (WildTypePattern)wildAnnotationTypePattern.getTypePattern();
-            NamePattern[] namePatterns = wildTypePattern.getNamePatterns();
-            res.put("pattern", namePatterns);
-            res.put("type", 2);
-            return res;
-        }
-        WildTypePattern wildTypePattern = (WildTypePattern)typePattern;
-        NamePattern[] namePatterns = wildTypePattern.getNamePatterns();
-        res.put("pattern", namePatterns);
-        res.put("type", 3);
         return res;
     }
 
+    /**
+     * for the analysis of the @Around annotation, a new method is generated after the call statement of the target
+     * function is inserted into the related call statement of the Around advice method.
+     *
+     * @param aspectModel  advice method
+     * @return Newly generated method, the actual business method
+     */
     protected SootMethod aroundParser(AspectModel aspectModel, SootMethod targetMethod) {
-        JimpleUtils jimpleUtils = Implement.jimpleUtils;
-        ArrayList<Unit> returnList = new ArrayList<Unit>();
-        ArrayList<Unit> insertPointList = new ArrayList<Unit>();
-        ArrayList<Unit> pjpList = new ArrayList<Unit>();
-        ArrayList<RefType> parameterTypes = new ArrayList<RefType>(aspectModel.getSootMethod().getParameterTypes());
+        List<Integer> returnList = new ArrayList<>();
+        List<Integer> insertPointList = new ArrayList<>();
+        List<Integer> pjpList = new ArrayList<>();
+        List<Type> parameterTypes = new ArrayList<>(aspectModel.getSootMethod().getParameterTypes());
         parameterTypes.addAll(targetMethod.getParameterTypes());
         parameterTypes.add(targetMethod.getDeclaringClass().getType());
-        SootMethod newAspectMethod = new SootMethod(aspectModel.getSootMethod().getName() + "_" + targetMethod.getName(), parameterTypes, aspectModel.getSootMethod().getReturnType(), 1);
-        aspectModel.getSootClass().getOrAddMethod(newAspectMethod);
-        JimpleBody aspectBody = (JimpleBody)jimpleUtils.getMethodBody(aspectModel.getSootMethod()).clone();
-        UnitPatchingChain aspectUnits = aspectBody.getUnits();
+        SootMethod newAspectMethod = new SootMethod(aspectModel.getSootMethod().getName()
+                + "_" + targetMethod.getName(),
+                parameterTypes,
+                aspectModel.getSootMethod().getReturnType(),
+                Modifier.PUBLIC);
+        aspectModel.getSootClass().addMethod(newAspectMethod);
+        JimpleBody aspectBody = (JimpleBody) aspectModel.getSootMethod().retrieveActiveBody().clone();
+        PatchingChain<Unit> aspectUnits = aspectBody.getUnits();
         Unit paramInsertPoint = null;
         int paramCount = 0;
         for (Unit unit : aspectUnits) {
             if (unit.toString().contains("@parameter")) {
                 paramInsertPoint = unit;
-                ++paramCount;
-                continue;
+                paramCount++;
+            } else if (paramCount!=0) {
+                break;
             }
-            if (paramCount == 0) continue;
-            break;
         }
-        for (int i = parameterTypes.size() - 1; i > paramCount - 1; --i) {
-            Local param = jimpleUtils.addLocalVar("param" + i, (Type)parameterTypes.get(i), (Body)aspectBody);
+
+        for (int i = parameterTypes.size() - 1; i > paramCount - 1; i--) {
+            Local param = jimpleUtils.addLocalVar("param" + i, parameterTypes.get(i), aspectBody);
             if (paramInsertPoint != null) {
-                aspectUnits.insertAfter(jimpleUtils.createIdentityStmt((Value)param, (Value)jimpleUtils.createParamRef((Type)parameterTypes.get(i), i)), paramInsertPoint);
-                continue;
+                aspectUnits.insertAfter(jimpleUtils.createIdentityStmt(param,
+                        jimpleUtils.createParamRef(parameterTypes.get(i), i)), paramInsertPoint);
+            } else {
+                aspectUnits.addFirst(jimpleUtils.createIdentityStmt(param,
+                        jimpleUtils.createParamRef(parameterTypes.get(i), i)));
             }
-            aspectUnits.addFirst(jimpleUtils.createIdentityStmt((Value)param, (Value)jimpleUtils.createParamRef((Type)parameterTypes.get(i), i)));
         }
-        newAspectMethod.setActiveBody((Body)aspectBody);
+
+        newAspectMethod.setActiveBody(aspectBody);
+        int lineNumber = 0;
         for (Unit unit : aspectUnits) {
-            if (unit instanceof JReturnVoidStmt || unit instanceof JReturnStmt) {
-                returnList.add(unit);
-                insertPointList.add(unit);
-                continue;
+            if ((unit instanceof JReturnVoidStmt) || (unit instanceof JReturnStmt)) {
+                returnList.add(lineNumber);
+                insertPointList.add(lineNumber);
+            } else if (unit.toString().contains("<org.aspectj.lang.ProceedingJoinPoint: java.lang.Object proceed()>")
+                    || unit.toString().contains("<org.aspectj.lang.ProceedingJoinPoint: java.lang.Object proceed(java.lang.Object[])>")) {
+                pjpList.add(lineNumber);
             }
-            if (!unit.toString().contains("<org.aspectj.lang.ProceedingJoinPoint: java.lang.Object proceed()>") && !unit.toString().contains("<org.aspectj.lang.ProceedingJoinPoint: java.lang.Object proceed(java.lang.Object[])>")) continue;
-            pjpList.add(unit);
+            lineNumber++;
         }
         AOPAnalysis.insertMethodMap.put(newAspectMethod.toString(), new InsertMethod(newAspectMethod, returnList, insertPointList, pjpList));
         return newAspectMethod;
     }
 
+    /**
+     * Insert the call statement of the target business code
+     *
+     * @param currentMethod  Caller method
+     * @param calleeMethod  The method that needs to be called
+     */
     protected void insertAOPTarget(SootMethod currentMethod, SootMethod calleeMethod, AdviceEnum currentEnum) {
-        JimpleUtils jimpleUtils = Implement.jimpleUtils;
         int modifyLineNumber = 0;
-        JimpleBody body = (JimpleBody)jimpleUtils.getMethodBody(currentMethod);
-        BaseBodyGenerator units = BaseBodyGeneratorFactory.get((Body)body);
+        JimpleBody body = (JimpleBody) currentMethod.retrieveActiveBody();
+        PatchingChain<Unit> units = body.getUnits();
         Local localModel = null;
         if (currentMethod.getDeclaringClass().getSuperclass().equals(calleeMethod.getDeclaringClass())) {
             for (Local local : body.getLocals()) {
-                if (!local.getName().equals("localTarget")) continue;
-                localModel = local;
-                break;
+                if (local.getName().equals("localTarget")) {
+                    localModel = local;
+                    break;
+                }
             }
         } else {
             localModel = body.getParameterLocal(body.getParameterLocals().size() - 1);
         }
+
         int paramCount = currentMethod.getParameterCount() - calleeMethod.getParameterCount() - 1;
-        ArrayList paramList = new ArrayList(body.getParameterLocals());
+        List<Value> paramList = new ArrayList<>(body.getParameterLocals());
         if (currentEnum != null && currentEnum.name().equals("AOP_AROUND")) {
-            if (currentMethod.getParameterCount() != 0) {
+            if (currentMethod.getParameterCount() != 0)
                 paramList.remove(currentMethod.getParameterCount() - 1);
-            }
-            if (paramCount > 0) {
-                paramList.subList(0, paramCount).clear();
+            for (int i = 0; i < paramCount; i++) {
+                paramList.remove(i);
             }
         }
-        InsertMethod im = (InsertMethod)AOPAnalysis.insertMethodMap.get(currentMethod.toString());
-        List returnList = im.getReturnList();
-        List insertPointList = im.getPjpList() == null ? im.getInsertPointList() : im.getPjpList();
+
+        InsertMethod im = AOPAnalysis.insertMethodMap.get(currentMethod.toString());
+        List<Integer> returnList = im.getReturnList();
+        List<Integer> insertPointList = im.getPjpList() == null ? im.getInsertPointList() : im.getPjpList();
+        List<Unit> unitList = new LinkedList<>(units);
         Local returnRef = null;
-        for (int i = 0; i < insertPointList.size(); ++i) {
+        for (int i = 0; i < insertPointList.size(); i++) {
             if (!(currentMethod.getReturnType() instanceof VoidType) && !(calleeMethod.getReturnType() instanceof VoidType)) {
                 if (returnRef == null) {
-                    String returnRefName = ((Unit)returnList.get(i)).toString().replace("return ", "");
+                    String returnRefName = unitList.get(returnList.get(i) + modifyLineNumber).toString().replace("return ", "");
                     for (Local local : body.getLocals()) {
-                        if (!local.getName().equals(returnRefName)) continue;
-                        returnRef = local;
-                        break;
+                        if (local.getName().equals(returnRefName)) {
+                            returnRef = local;
+                            break;
+                        }
                     }
                     if (returnRef == null) {
-                        returnRef = jimpleUtils.addLocalVar(returnRefName, (Type)RefType.v((String)currentMethod.getReturnType().toString()), (Body)body);
+                        returnRef = jimpleUtils.newLocalVar(returnRefName, RefType.v(currentMethod.getReturnType().toString()));
                     }
                 }
-                VirtualInvokeExpr returnValue = jimpleUtils.createVirtualInvokeExpr(localModel, calleeMethod, paramList);
+
+
+                Value returnValue = jimpleUtils.createVirtualInvokeExpr(localModel, calleeMethod, paramList);
                 if (im.getPjpList() != null) {
-                    units.insertAfter(jimpleUtils.createAssignStmt(returnRef, (Value)returnValue), (Unit)insertPointList.get(i));
+                    units.insertAfter(jimpleUtils.createAssignStmt(returnRef, returnValue), unitList.get(insertPointList.get(i) + modifyLineNumber));
                 } else {
-                    units.insertBefore(jimpleUtils.createAssignStmt(returnRef, (Value)returnValue), (Unit)insertPointList.get(i));
+                    units.insertBefore(jimpleUtils.createAssignStmt(returnRef, returnValue), unitList.get(insertPointList.get(i) + modifyLineNumber));
                 }
-            } else if (im.getPjpList() != null) {
-                units.insertAfter(jimpleUtils.virtualCallStatement(localModel, calleeMethod, paramList), (Unit)insertPointList.get(i));
             } else {
-                units.insertBefore(jimpleUtils.virtualCallStatement(localModel, calleeMethod, paramList), (Unit)insertPointList.get(i));
+                if (im.getPjpList() != null) {
+                    units.insertAfter(jimpleUtils.virtualCallStatement(localModel, calleeMethod, paramList), unitList.get(insertPointList.get(i) + modifyLineNumber));
+                } else {
+                    units.insertBefore(jimpleUtils.virtualCallStatement(localModel, calleeMethod, paramList), unitList.get(insertPointList.get(i) + modifyLineNumber));
+                }
             }
-            ++modifyLineNumber;
+            modifyLineNumber += 1;
+            for (int j = 0; j < returnList.size(); j++) {
+                returnList.set(j, returnList.get(j) + modifyLineNumber);
+            }
+            insertPointList.set(i, insertPointList.get(i) + modifyLineNumber);
+            unitList = new LinkedList<>(units);
         }
     }
 
+    /**
+     * Insert the Around advice method into the business logic
+     *
+     * @param currentMethod  The current method, the caller
+     * @param calleeMethod  The method that needs to be instrumented, that is, the callee
+     */
     protected void insertAOPAround(SootMethod currentMethod, SootMethod calleeMethod) {
-        Ref detal;
-        JimpleUtils jimpleUtils = Implement.jimpleUtils;
-        InsertMethod im = (InsertMethod)AOPAnalysis.insertMethodMap.get(currentMethod.getSignature());
-        List returnList = im.getReturnList();
-        List insertPointList = im.getPjpList() == null ? im.getInsertPointList() : im.getPjpList();
+        InsertMethod im = AOPAnalysis.insertMethodMap.get(currentMethod.getSignature());
+        List<Integer> returnList = im.getReturnList();
+        List<Integer> insertPointList = im.getPjpList() == null ? im.getInsertPointList() : im.getPjpList();
+
         int modifyLineNumber = 0;
-        JimpleBody body = (JimpleBody)jimpleUtils.getMethodBody(currentMethod);
-        Local localModel = Jimple.v().newLocal(calleeMethod.getDeclaringClass().getShortName().toLowerCase(), (Type)RefType.v((String)calleeMethod.getDeclaringClass().getName()));
-        BaseBodyGenerator units = BaseBodyGeneratorFactory.get((Body)body);
-        Local returnLocal = this.initLocalModel(currentMethod, calleeMethod, body, units, localModel, detal = new Ref((Object)0));
+        Local localModel = jimpleUtils.newLocalVar(calleeMethod.getDeclaringClass().getShortName().toLowerCase(), RefType.v(calleeMethod.getDeclaringClass().getName()));
+        JimpleBody body = (JimpleBody) currentMethod.retrieveActiveBody();
+        PatchingChain<Unit> units = body.getUnits();
+        Local returnLocal = initLocalModel(currentMethod, calleeMethod, body, units, localModel);
         if (returnLocal == localModel) {
-            modifyLineNumber += 2 + (Integer)detal.get();
+            modifyLineNumber += 2;
         } else {
             localModel = returnLocal;
         }
-        ArrayList<Object> paramList = new ArrayList<Object>();
+
+        List<Value> paramList = new ArrayList<>();
         int paramCount = calleeMethod.getParameterCount() - currentMethod.getParameterCount();
         if (im.getPjpList() == null) {
-            --paramCount;
+            paramCount--;
         }
-        NewUnitsAtFirstImmediately insertAtFirst = new NewUnitsAtFirstImmediately(units);
-        for (int j = 0; j < paramCount; ++j) {
-            if (this.addJoinPointToParam(calleeMethod, j, body, paramList)) continue;
-            paramList.add(units.getValueForType((INewUnits)insertAtFirst, calleeMethod.getParameterType(j)));
+        for (int j = 0; j < paramCount; j++) {
+            if (!addJoinPointToParam(calleeMethod, j, body, paramList)) {
+                paramList.add(NullConstant.v());
+            }
         }
         paramList.addAll(body.getParameterLocals());
         if (im.getPjpList() == null) {
             for (Local local : body.getLocals()) {
-                if (!local.getName().equals("localTarget")) continue;
-                paramList.add(local);
+                if (local.getName().equals("localTarget")) {
+                    paramList.add(local);
+                }
             }
         }
         Local returnRef = null;
-        for (int i = 0; i < insertPointList.size(); ++i) {
+        List<Unit> unitList = new LinkedList<>(units);
+        for (int i = 0; i < insertPointList.size(); i++) {
             if (!(currentMethod.getReturnType() instanceof VoidType)) {
                 if (returnRef == null) {
-                    String returnRefName = ((Unit)returnList.get(i)).toString().replace("return ", "");
+                    String returnRefName = unitList.get(returnList.get(i) + modifyLineNumber).toString().replace("return ", "");
                     for (Local local : body.getLocals()) {
-                        if (!local.getName().equals(returnRefName)) continue;
-                        returnRef = local;
-                        break;
+                        if (local.getName().equals(returnRefName)) {
+                            returnRef = local;
+                            break;
+                        }
                     }
                     if (returnRef == null) {
-                        returnRef = jimpleUtils.addLocalVar(returnRefName, currentMethod.getReturnType(), (Body)body);
+                        returnRef = jimpleUtils.newLocalVar(returnRefName, currentMethod.getReturnType());
                     }
                 }
-                VirtualInvokeExpr returnValue = jimpleUtils.createVirtualInvokeExpr(localModel, calleeMethod, paramList);
+
+                Value returnValue = jimpleUtils.createVirtualInvokeExpr(localModel, calleeMethod, paramList);
                 if (im.getPjpList() != null) {
-                    units.insertAfter(jimpleUtils.createAssignStmt(returnRef, (Value)returnValue), (Unit)insertPointList.get(i));
+                    units.insertAfter(jimpleUtils.createAssignStmt(returnRef, returnValue), unitList.get(insertPointList.get(i) + modifyLineNumber));
                 } else {
-                    units.insertBefore(jimpleUtils.createAssignStmt(returnRef, (Value)returnValue), (Unit)insertPointList.get(i));
+                    units.insertBefore(jimpleUtils.createAssignStmt(returnRef, returnValue), unitList.get(insertPointList.get(i) + modifyLineNumber));
                 }
-            } else if (im.getPjpList() != null) {
-                units.insertAfter(jimpleUtils.virtualCallStatement(localModel, calleeMethod, paramList), (Unit)insertPointList.get(i));
             } else {
-                units.insertBefore(jimpleUtils.virtualCallStatement(localModel, calleeMethod, paramList), (Unit)insertPointList.get(i));
+                if (im.getPjpList() != null) {
+                    units.insertAfter(jimpleUtils.virtualCallStatement(localModel, calleeMethod, paramList), unitList.get(insertPointList.get(i) + modifyLineNumber));
+                } else {
+                    units.insertBefore(jimpleUtils.virtualCallStatement(localModel, calleeMethod, paramList), unitList.get(insertPointList.get(i) + modifyLineNumber));
+                }
             }
-            ++modifyLineNumber;
+            modifyLineNumber += 1;
+            for (int j = 0; j < returnList.size(); j++) {
+                returnList.set(j, returnList.get(j) + modifyLineNumber);
+            }
+            insertPointList.set(i, insertPointList.get(i) + modifyLineNumber);
+            unitList = new LinkedList<>(units);
         }
     }
 
+    /**
+     * Insert the Before advice method into the business logic
+     *
+     * @param currentMethod  The current method, the caller
+     * @param calleeMethod  The method that needs to be instrumented, that is, the callee
+     */
     protected void insertAOPBefore(SootMethod currentMethod, SootMethod calleeMethod) {
-        Ref detal;
-        JimpleUtils jimpleUtils = Implement.jimpleUtils;
         int modifyLineNumber = 0;
-        JimpleBody body = (JimpleBody)jimpleUtils.getMethodBody(currentMethod);
-        Local localModel = Jimple.v().newLocal(calleeMethod.getDeclaringClass().getShortName().toLowerCase(), (Type)RefType.v((String)calleeMethod.getDeclaringClass().getName()));
-        BaseBodyGenerator units = BaseBodyGeneratorFactory.get((Body)body);
-        Local returnLocal = this.initLocalModel(currentMethod, calleeMethod, body, units, localModel, detal = new Ref((Object)0));
+        Local localModel = jimpleUtils.newLocalVar(calleeMethod.getDeclaringClass().getShortName().toLowerCase(), RefType.v(calleeMethod.getDeclaringClass().getName()));
+        JimpleBody body = (JimpleBody) currentMethod.retrieveActiveBody();
+        PatchingChain<Unit> units = body.getUnits();
+        Local returnLocal = initLocalModel(currentMethod, calleeMethod, body, units, localModel);
         if (returnLocal == localModel) {
-            modifyLineNumber += 2 + (Integer)detal.get();
+            modifyLineNumber += 2;
         } else {
             localModel = returnLocal;
         }
-        NewUnitsAtFirstImmediately insertAtFirst = new NewUnitsAtFirstImmediately(units);
-        ArrayList<Value> paramList = new ArrayList<Value>();
+
+        List<Value> paramList = new ArrayList<>();
         int paramCount = calleeMethod.getParameterCount();
-        for (int j = 0; j < paramCount; ++j) {
-            if (this.addJoinPointToParam(calleeMethod, j, body, paramList)) continue;
-            paramList.add(units.getValueForType((INewUnits)insertAtFirst, calleeMethod.getParameterType(j)));
-        }
-        InsertMethod im = (InsertMethod)AOPAnalysis.insertMethodMap.get(currentMethod.toString());
-        List returnList = im.getReturnList();
-        List insertPointList = im.getPjpList() == null ? im.getInsertPointList() : im.getPjpList();
-        for (int i = 0; i < insertPointList.size(); ++i) {
-            if (localModel != body.getThisLocal()) {
-                units.insertBefore(jimpleUtils.virtualCallStatement(localModel, calleeMethod, paramList), (Unit)insertPointList.get(i));
-            } else {
-                units.insertBefore(jimpleUtils.specialCallStatement(localModel, calleeMethod, paramList), (Unit)insertPointList.get(i));
+        for (int j = 0; j < paramCount; j++) {
+            if (!addJoinPointToParam(calleeMethod, j, body, paramList)) {
+                paramList.add(NullConstant.v());
             }
-            ++modifyLineNumber;
+        }
+
+        InsertMethod im = AOPAnalysis.insertMethodMap.get(currentMethod.toString());
+        List<Integer> returnList = im.getReturnList();
+        List<Integer> insertPointList = im.getPjpList() == null ? im.getInsertPointList() : im.getPjpList();
+        List<Unit> unitList = new LinkedList<>(units);
+
+        for (int i = 0; i < insertPointList.size(); i++) {
+            if (localModel != body.getThisLocal()) {
+                units.insertBefore(jimpleUtils.virtualCallStatement(localModel, calleeMethod, paramList), unitList.get(insertPointList.get(i) + modifyLineNumber));
+            } else {
+                units.insertBefore(jimpleUtils.specialCallStatement(localModel, calleeMethod, paramList), unitList.get(insertPointList.get(i) + modifyLineNumber));
+            }
+            modifyLineNumber += 1;
+            for (int j = 0; j < returnList.size(); j++) {
+                returnList.set(j, returnList.get(j) + modifyLineNumber);
+            }
+            insertPointList.set(i, insertPointList.get(i) + modifyLineNumber);
+            unitList = new LinkedList<>(units);
         }
     }
 
+    /**
+     * Insert the After advice method into the business logic
+     *
+     * @param currentMethod The current method, the caller
+     * @param calleeMethod  The method that needs to be instrumented, that is, the callee
+     */
     protected void insertAOPAfter(SootMethod currentMethod, SootMethod calleeMethod) {
-        Ref detal;
-        JimpleUtils jimpleUtils = Implement.jimpleUtils;
         int modifyLineNumber = 0;
-        JimpleBody body = (JimpleBody)jimpleUtils.getMethodBody(currentMethod);
-        Local localModel = Jimple.v().newLocal(calleeMethod.getDeclaringClass().getShortName().toLowerCase(), (Type)RefType.v((String)calleeMethod.getDeclaringClass().getName()));
-        BaseBodyGenerator units = BaseBodyGeneratorFactory.get((Body)body);
-        Local returnLocal = this.initLocalModel(currentMethod, calleeMethod, body, units, localModel, detal = new Ref((Object)0));
+        Local localModel = jimpleUtils.newLocalVar(calleeMethod.getDeclaringClass().getShortName().toLowerCase(), RefType.v(calleeMethod.getDeclaringClass().getName()));
+        JimpleBody body = (JimpleBody) currentMethod.retrieveActiveBody();
+        PatchingChain<Unit> units = body.getUnits();
+        Local returnLocal = initLocalModel(currentMethod, calleeMethod, body, units, localModel);
         if (returnLocal == localModel) {
-            modifyLineNumber += 2 + (Integer)detal.get();
+            modifyLineNumber += 2;
         } else {
             localModel = returnLocal;
         }
-        NewUnitsAtFirstImmediately insertAtFirst = new NewUnitsAtFirstImmediately(units);
-        ArrayList<Value> paramList = new ArrayList<Value>();
+
+        List<Value> paramList = new ArrayList<>();
         int paramCount = calleeMethod.getParameterCount();
-        for (int j = 0; j < paramCount; ++j) {
-            if (this.addJoinPointToParam(calleeMethod, j, body, paramList)) continue;
-            paramList.add(units.getValueForType((INewUnits)insertAtFirst, calleeMethod.getParameterType(j)));
+        for (int j = 0; j < paramCount; j++) {
+            if (!addJoinPointToParam(calleeMethod, j, body, paramList)) {
+                paramList.add(NullConstant.v());
+            }
         }
-        InsertMethod im = (InsertMethod)AOPAnalysis.insertMethodMap.get(currentMethod.toString());
-        List returnList = im.getReturnList();
-        List insertPointList = AOPAnalysis.newVersion && im.getPjpList() != null ? im.getPjpList() : im.getInsertPointList();
-        for (int i = 0; i < insertPointList.size(); ++i) {
+
+        InsertMethod im = AOPAnalysis.insertMethodMap.get(currentMethod.toString());
+        List<Integer> returnList = im.getReturnList();
+        List<Integer> insertPointList =
+                (AOPAnalysis.newVersion && im.getPjpList() != null) ? im.getPjpList() : im.getInsertPointList();
+        List<Unit> unitList = new LinkedList<>(units);
+        for (int i = 0; i < insertPointList.size(); i++) {
             if (!AOPAnalysis.newVersion) {
                 if (localModel != body.getThisLocal()) {
-                    units.insertBefore(jimpleUtils.virtualCallStatement(localModel, calleeMethod, paramList), (Unit)insertPointList.get(i));
+                    units.insertBefore(jimpleUtils.virtualCallStatement(localModel, calleeMethod, paramList), unitList.get(insertPointList.get(i) + modifyLineNumber));
                 } else {
-                    units.insertBefore(jimpleUtils.specialCallStatement(localModel, calleeMethod, paramList), (Unit)insertPointList.get(i));
+                    units.insertBefore(jimpleUtils.specialCallStatement(localModel, calleeMethod, paramList), unitList.get(insertPointList.get(i) + modifyLineNumber));
                 }
             } else {
-                units.insertAfter(jimpleUtils.specialCallStatement(localModel, calleeMethod, paramList), (Unit)insertPointList.get(i));
+                units.insertAfter(jimpleUtils.specialCallStatement(localModel, calleeMethod, paramList), unitList.get(insertPointList.get(i) + modifyLineNumber));
             }
-            ++modifyLineNumber;
+
+            modifyLineNumber += 1;
+            for (int j = 0; j < returnList.size(); j++) {
+                returnList.set(j, returnList.get(j) + modifyLineNumber);
+            }
+            insertPointList.set(i, insertPointList.get(i) + modifyLineNumber - 1);
+            unitList = new LinkedList<>(units);
         }
     }
 
+    /**
+     * Insert the AfterReturning advice method into the business logic
+     *
+     * @param currentMethod  The current method, the caller
+     * @param calleeMethod  The method that needs to be instrumented, that is, the callee
+     */
     protected void insertAOPAfterReturning(SootMethod currentMethod, SootMethod calleeMethod, List<String> expressionList) {
-        Ref detal;
-        JimpleUtils jimpleUtils = Implement.jimpleUtils;
         int modifyLineNumber = 0;
-        JimpleBody body = (JimpleBody)jimpleUtils.getMethodBody(currentMethod);
-        Local localModel = Jimple.v().newLocal(calleeMethod.getDeclaringClass().getShortName().toLowerCase(), (Type)RefType.v((String)calleeMethod.getDeclaringClass().getName()));
-        BaseBodyGenerator units = BaseBodyGeneratorFactory.get((Body)body);
-        Local returnLocal = this.initLocalModel(currentMethod, calleeMethod, body, units, localModel, detal = new Ref((Object)0));
+        Local localModel = jimpleUtils.newLocalVar(calleeMethod.getDeclaringClass().getShortName().toLowerCase(), RefType.v(calleeMethod.getDeclaringClass().getName()));
+        JimpleBody body = (JimpleBody) currentMethod.retrieveActiveBody();
+        PatchingChain<Unit> units = body.getUnits();
+
+        Local returnLocal = initLocalModel(currentMethod, calleeMethod, body, units, localModel);
         if (returnLocal == localModel) {
-            modifyLineNumber += 2 + (Integer)detal.get();
+            modifyLineNumber += 2;
         } else {
             localModel = returnLocal;
         }
-        NewUnitsAtFirstImmediately insertAtFirst = new NewUnitsAtFirstImmediately(units);
-        ArrayList<Value> paramList = new ArrayList<Value>();
+
+        List<Value> paramList = new ArrayList<>();
         int paramCount = calleeMethod.getParameterCount();
         int returnParamIndex = -1;
-        for (int j = 0; j < paramCount; ++j) {
-            if (((Type)calleeMethod.getParameterTypes().get(j)).toString().equals("java.lang.Object") && expressionList.contains(jimpleUtils.getMethodBody(calleeMethod).getParameterLocal(j).toString())) {
+        for (int j = 0; j < paramCount; j++) {
+            if (calleeMethod.getParameterTypes().get(j).toString().equals("java.lang.Object")
+                    && expressionList.contains(calleeMethod.retrieveActiveBody().getParameterLocal(j).toString())) {
                 returnParamIndex = j;
             }
-            if (this.addJoinPointToParam(calleeMethod, j, body, paramList)) continue;
-            paramList.add(units.getValueForType((INewUnits)insertAtFirst, calleeMethod.getParameterType(j)));
+            if (!addJoinPointToParam(calleeMethod, j, body, paramList)) {
+                paramList.add(NullConstant.v());
+            }
         }
-        InsertMethod im = (InsertMethod)AOPAnalysis.insertMethodMap.get(currentMethod.toString());
-        List insertPointList = AOPAnalysis.newVersion && im.getPjpList() != null ? im.getPjpList() : im.getInsertPointList();
-        Object returnRef = null;
-        for (Unit unit : insertPointList) {
+
+        InsertMethod im = AOPAnalysis.insertMethodMap.get(currentMethod.toString());
+        List<Integer> returnList = im.getReturnList();
+        List<Integer> insertPointList =
+                (AOPAnalysis.newVersion && im.getPjpList() != null) ? im.getPjpList() : im.getInsertPointList();
+        List<Unit> unitList = new LinkedList<>(units);
+        Local returnRef = null;
+        for (int i = 0; i < insertPointList.size(); i++) {
+            if (!(currentMethod.getReturnType() instanceof VoidType)) {
+                if (returnRef == null) {
+                    String returnRefName = unitList.get(returnList.get(i) + modifyLineNumber).toString().replace("return ", "");
+                    if (returnParamIndex != -1) {
+                        paramList.set(returnParamIndex, returnRef);
+                    }
+                    if (returnRef == null) {
+                        returnRef = jimpleUtils.newLocalVar(returnRefName, currentMethod.getReturnType());
+                    }
+                }
+
+            }
+
             if (!AOPAnalysis.newVersion) {
                 if (localModel != body.getThisLocal()) {
-                    units.insertBefore(jimpleUtils.virtualCallStatement(localModel, calleeMethod, paramList), unit);
+                    units.insertBefore(jimpleUtils.virtualCallStatement(localModel, calleeMethod, paramList), unitList.get(insertPointList.get(i) + modifyLineNumber));
                 } else {
-                    units.insertBefore(jimpleUtils.specialCallStatement(localModel, calleeMethod, paramList), unit);
+                    units.insertBefore(jimpleUtils.specialCallStatement(localModel, calleeMethod, paramList), unitList.get(insertPointList.get(i) + modifyLineNumber));
                 }
             } else {
-                units.insertAfter(jimpleUtils.specialCallStatement(localModel, calleeMethod, paramList), unit);
+                units.insertAfter(jimpleUtils.specialCallStatement(localModel, calleeMethod, paramList), unitList.get(insertPointList.get(i) + modifyLineNumber));
             }
-            ++modifyLineNumber;
+
+            modifyLineNumber += 1;
+            for (int j = 0; j < returnList.size(); j++) {
+                returnList.set(j, returnList.get(j) + modifyLineNumber);
+            }
+            insertPointList.set(i, insertPointList.get(i) + modifyLineNumber - 1);
+            unitList = new LinkedList<>(units);
         }
     }
 
-    private Local initLocalModel(SootMethod currentMethod, SootMethod calleeMethod, JimpleBody body, BaseBodyGenerator units, Local localModel, Ref<Integer> detal) {
-        JimpleUtils jimpleUtils = Implement.jimpleUtils;
-        Local existLocal = this.isExistLocal(body.getLocals(), localModel);
+    /**
+     * Initialize the local variables of the current method
+     *
+     * @param currentMethod  The current method, the caller
+     * @param calleeMethod  The method that needs to be instrumented, that is, the callee
+     * @param body          The method body of the current method (that is, the caller)
+     * @param units         The method body statement of the current method (that is, the caller)
+     * @param localModel    The new local variables which need to be added
+     * @return Local variable
+     */
+    private Local initLocalModel(SootMethod currentMethod, SootMethod calleeMethod, JimpleBody body, PatchingChain<Unit> units, Local localModel) {
+        Local existLocal = isExistLocal(body.getLocals(), localModel);
         if (calleeMethod.getDeclaringClass().getName().equals(currentMethod.getDeclaringClass().getName())) {
             localModel = body.getThisLocal();
         } else if (existLocal == null) {
-            body.getLocals().add((Object)localModel);
+            body.getLocals().add(localModel);
             Unit localInitAssign = jimpleUtils.createAssignStmt(localModel, calleeMethod.getDeclaringClass().getName());
-            units.addFirst(Collections.singletonList(localInitAssign));
-            NewUnits.BeforeUnit beforeUnit = jimpleUtils.specialCallStatement(localModel, JimpleUtils.getMinConstructorOrCreate((SootClass)calleeMethod.getDeclaringClass()), units);
-            units.insertAfter(beforeUnit, localInitAssign);
-            detal.set((Object)beforeUnit.getInsertBefore().getUnits().size());
+            units.addFirst(localInitAssign);
+            units.insertAfter(jimpleUtils.specialCallStatement(localModel,
+                    calleeMethod.getDeclaringClass().getMethodByName("<init>")),
+                    localInitAssign);
         } else {
             localModel = existLocal;
         }
         return localModel;
     }
 
+    /**
+     * Add JoinPoint interface parameters to AOP related processing methods
+     *
+     * @param calleeMethod  The method that needs to be instrumented, that is, the callee
+     * @param paramIndex   The index of formal parameter
+     * @param body         The method body of the current method (that is, the caller)
+     * @param paramList    The list of arguments
+     * @return
+     */
     private boolean addJoinPointToParam(SootMethod calleeMethod, int paramIndex, JimpleBody body, List<Value> paramList) {
         boolean continueFlag = false;
         if (calleeMethod.getParameterType(paramIndex).toString().contains("JoinPoint")) {
             for (Local local : body.getLocals()) {
-                if (!local.getType().toString().contains("JoinPoint")) continue;
-                paramList.add((Value)local);
-                continueFlag = true;
-                break;
+                if (local.getType().toString().contains("JoinPoint")) {
+                    paramList.add(local);
+                    continueFlag = true;
+                    break;
+                }
             }
         }
         return continueFlag;
     }
 
+    /**
+     * Determine whether local variables already exist in the method body
+     *
+     * @param locals     The local variable table in the method body
+     * @param localModel The new local variables need to be added
+     * @return boolean value
+     */
     private Local isExistLocal(Chain<Local> locals, Local localModel) {
         for (Local local : locals) {
-            if (!local.getName().equals(localModel.getName()) || !local.getType().equals(localModel.getType()) || local == localModel) continue;
-            return local;
+            if (local.getName().equals(localModel.getName()) && local.getType().equals(localModel.getType())) {
+                return local;
+            }
         }
         return null;
     }
 
-    public static void clear() {
-        modelMap.clear();
-        proxyMap.clear();
-        TargetToAdv.clear();
-    }
 }
-

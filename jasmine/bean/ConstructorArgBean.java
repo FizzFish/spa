@@ -1,13 +1,7 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  bean.ConstructorArgBean
- */
-package bean;
+package jasmine.bean;
+
 
 public class ConstructorArgBean {
-    private String xml;
     private String argName;
     private Integer argIndex;
     private String argType;
@@ -15,12 +9,20 @@ public class ConstructorArgBean {
     private String argValue;
     private String clazzName;
 
+    @Override
     public String toString() {
-        return "ConstructorArgBean{argName='" + this.argName + '\'' + ", argIndex=" + this.argIndex + ", argType='" + this.argType + '\'' + ", refType='" + this.refType + '\'' + ", argValue='" + this.argValue + '\'' + ", clazzName='" + this.clazzName + '\'' + '}';
+        return "ConstructorArgBean{" +
+                "argName='" + argName + '\'' +
+                ", argIndex=" + argIndex +
+                ", argType='" + argType + '\'' +
+                ", refType='" + refType + '\'' +
+                ", argValue='" + argValue + '\'' +
+                ", clazzName='" + clazzName + '\'' +
+                '}';
     }
 
     public String getArgName() {
-        return this.argName;
+        return argName;
     }
 
     public void setArgName(String argName) {
@@ -28,7 +30,7 @@ public class ConstructorArgBean {
     }
 
     public Integer getArgIndex() {
-        return this.argIndex;
+        return argIndex;
     }
 
     public void setArgIndex(Integer argIndex) {
@@ -36,7 +38,7 @@ public class ConstructorArgBean {
     }
 
     public String getArgType() {
-        return this.argType;
+        return argType;
     }
 
     public void setArgType(String argType) {
@@ -44,7 +46,7 @@ public class ConstructorArgBean {
     }
 
     public String getRefType() {
-        return this.refType;
+        return refType;
     }
 
     public void setRefType(String refType) {
@@ -52,7 +54,7 @@ public class ConstructorArgBean {
     }
 
     public String getArgValue() {
-        return this.argValue;
+        return argValue;
     }
 
     public void setArgValue(String argValue) {
@@ -60,19 +62,10 @@ public class ConstructorArgBean {
     }
 
     public String getClazzName() {
-        return this.clazzName;
+        return clazzName;
     }
 
     public void setClazzName(String clazzName) {
         this.clazzName = clazzName;
     }
-
-    public void setXml(String xml) {
-        this.xml = xml;
-    }
-
-    public String getXml() {
-        return this.xml;
-    }
 }
-

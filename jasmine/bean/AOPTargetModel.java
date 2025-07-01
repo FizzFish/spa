@@ -1,36 +1,36 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  bean.AOPTargetModel
- *  bean.AspectModel
- *  soot.SootClass
- *  soot.SootMethod
- */
-package bean;
+package jasmine.bean;
 
-import bean.AspectModel;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 import soot.SootClass;
 import soot.SootMethod;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class AOPTargetModel {
     private String className;
     private String methodName;
     private String proxyClassName;
     private String proxyMethodName;
+    // target class
     private SootClass sootClass;
+    // target method
     private SootMethod sootMethod;
+    // proxy class
     private SootClass proxyClass;
+    // proxy method
     private SootMethod proxyMethod;
-    private List<AspectModel> advices = new ArrayList();
-    private Set<SootMethod> pointcuts = new LinkedHashSet();
+    // advice
+    private List<AspectModel> advices = new ArrayList<>();
+    // Pointcut
+    private Set<SootMethod> pointcuts = new HashSet<>();
+
+    public AOPTargetModel() {
+    }
 
     public String getClassName() {
-        return this.className;
+        return className;
     }
 
     public void setClassName(String className) {
@@ -38,7 +38,7 @@ public class AOPTargetModel {
     }
 
     public String getMethodName() {
-        return this.methodName;
+        return methodName;
     }
 
     public void setMethodName(String methodName) {
@@ -46,7 +46,7 @@ public class AOPTargetModel {
     }
 
     public SootClass getSootClass() {
-        return this.sootClass;
+        return sootClass;
     }
 
     public void setSootClass(SootClass sootClass) {
@@ -54,7 +54,7 @@ public class AOPTargetModel {
     }
 
     public SootMethod getSootMethod() {
-        return this.sootMethod;
+        return sootMethod;
     }
 
     public void setSootMethod(SootMethod sootMethod) {
@@ -62,7 +62,7 @@ public class AOPTargetModel {
     }
 
     public List<AspectModel> getAdvices() {
-        return this.advices;
+        return advices;
     }
 
     public void setAdvices(List<AspectModel> advices) {
@@ -74,7 +74,7 @@ public class AOPTargetModel {
     }
 
     public Set<SootMethod> getPointcuts() {
-        return this.pointcuts;
+        return pointcuts;
     }
 
     public void setPointcuts(Set<SootMethod> pointcuts) {
@@ -86,7 +86,7 @@ public class AOPTargetModel {
     }
 
     public SootClass getProxyClass() {
-        return this.proxyClass;
+        return proxyClass;
     }
 
     public void setProxyClass(SootClass proxyClass) {
@@ -94,7 +94,7 @@ public class AOPTargetModel {
     }
 
     public SootMethod getProxyMethod() {
-        return this.proxyMethod;
+        return proxyMethod;
     }
 
     public void setProxyMethod(SootMethod proxyMethod) {
@@ -102,7 +102,7 @@ public class AOPTargetModel {
     }
 
     public String getProxyClassName() {
-        return this.proxyClassName;
+        return proxyClassName;
     }
 
     public void setProxyClassName(String proxyClassName) {
@@ -110,15 +110,26 @@ public class AOPTargetModel {
     }
 
     public String getProxyMethodName() {
-        return this.proxyMethodName;
+        return proxyMethodName;
     }
 
     public void setProxyMethodName(String proxyMethodName) {
         this.proxyMethodName = proxyMethodName;
     }
 
+    @Override
     public String toString() {
-        return "AOPTargetModel{className='" + this.className + '\'' + ", methodName='" + this.methodName + '\'' + ", proxyClassName='" + this.proxyClassName + '\'' + ", proxyMethodName='" + this.proxyMethodName + '\'' + ", sootClass=" + this.sootClass + ", sootMethod=" + this.sootMethod + ", proxyClass=" + this.proxyClass + ", proxyMethod=" + this.proxyMethod + ", advices=" + this.advices + ", pointcuts=" + this.pointcuts + '}';
+        return "AOPTargetModel{" +
+                "className='" + className + '\'' +
+                ", methodName='" + methodName + '\'' +
+                ", proxyClassName='" + proxyClassName + '\'' +
+                ", proxyMethodName='" + proxyMethodName + '\'' +
+                ", sootClass=" + sootClass +
+                ", sootMethod=" + sootMethod +
+                ", proxyClass=" + proxyClass +
+                ", proxyMethod=" + proxyMethod +
+                ", advices=" + advices +
+                ", pointcuts=" + pointcuts +
+                '}';
     }
 }
-

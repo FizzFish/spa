@@ -1,32 +1,23 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  enums.AdviceEnum
- *  enums.EnumMessage
- */
-package enums;
+package jasmine.enums;
 
-import enums.EnumMessage;
-
-public enum AdviceEnum implements EnumMessage
-{
+public enum AdviceEnum implements EnumMessage {
     AOP_AROUND("Lorg/aspectj/lang/annotation/Around;", "@Around"),
     AOP_BEFORE("Lorg/aspectj/lang/annotation/Before;", "@Before"),
     AOP_AFTER_RETURNING("Lorg/aspectj/lang/annotation/AfterReturning;", "@AfterReturning"),
     AOP_AFTER_THROWING("Lorg/aspectj/lang/annotation/AfterThrowing;", "@AfterThrowing"),
     AOP_AFTER("Lorg/aspectj/lang/annotation/After;", "@After");
 
+
     private String annotationClassName;
     private String annotation;
 
-    private AdviceEnum(String annotationClassName, String annotation) {
+    AdviceEnum(String annotationClassName, String annotation) {
         this.annotationClassName = annotationClassName;
         this.annotation = annotation;
     }
 
     public String getAnnotationClassName() {
-        return this.annotationClassName;
+        return annotationClassName;
     }
 
     public void setAnnotationClassName(String annotationClassName) {
@@ -34,15 +25,16 @@ public enum AdviceEnum implements EnumMessage
     }
 
     public String getAnnotation() {
-        return this.annotation;
+        return annotation;
     }
 
     public void setAnnotation(String annotation) {
         this.annotation = annotation;
     }
 
+
+    @Override
     public Object getValue() {
-        return this.annotationClassName;
+        return annotationClassName;
     }
 }
-

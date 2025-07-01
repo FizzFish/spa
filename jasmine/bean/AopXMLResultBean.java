@@ -1,20 +1,19 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  bean.AopXMLResultBean
- */
-package bean;
+package jasmine.bean;
 
 public class AopXMLResultBean {
+    // aspect
     private String aopclass;
+    // advice
     private String aopmethod;
+    // advice type
     private String activetype;
+    // pointcut expression
     private String exper;
+    // order
     private int order;
 
     public int getOrder() {
-        return this.order;
+        return order;
     }
 
     public void setOrder(int order) {
@@ -32,12 +31,19 @@ public class AopXMLResultBean {
         this.order = order;
     }
 
+    @Override
     public String toString() {
-        return "AopXMLResultBean{aopclass='" + this.aopclass + '\'' + ", aopmethod='" + this.aopmethod + '\'' + ", activetype='" + this.activetype + '\'' + ", exper='" + this.exper + '\'' + ", order=" + this.order + '}';
+        return "AopXMLResultBean{" +
+                "aopclass='" + aopclass + '\'' +
+                ", aopmethod='" + aopmethod + '\'' +
+                ", activetype='" + activetype + '\'' +
+                ", exper='" + exper + '\'' +
+                ", order=" + order +
+                '}';
     }
 
     public String getAopclass() {
-        return this.aopclass;
+        return aopclass;
     }
 
     public void setAopclass(String aopclass) {
@@ -45,7 +51,7 @@ public class AopXMLResultBean {
     }
 
     public String getAopmethod() {
-        return this.aopmethod;
+        return aopmethod;
     }
 
     public void setAopmethod(String aopmethod) {
@@ -53,7 +59,7 @@ public class AopXMLResultBean {
     }
 
     public String getActivetype() {
-        return this.activetype;
+        return activetype;
     }
 
     public void setActivetype(String activetype) {
@@ -61,11 +67,10 @@ public class AopXMLResultBean {
     }
 
     public String getExper() {
-        return this.exper;
+        return exper;
     }
 
     public void setExper(String exper) {
         this.exper = exper;
     }
 }
-

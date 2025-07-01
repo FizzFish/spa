@@ -1,28 +1,53 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  bean.ConstructorArgBean
- *  mock.GenerateSyntheticClass
- *  soot.SootClass
- */
-package mock;
+package jasmine.mock;
 
-import bean.ConstructorArgBean;
+import jasmine.bean.ConstructorArgBean;
+import soot.SootClass;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import soot.SootClass;
 
+/**
+ * @ClassName GenerateSyntheticClass
+ * @Description Generate synthetic classes for all interfaces or abstract classes for
+ * which no concrete implementation class can be found
+ **/
 public interface GenerateSyntheticClass {
-    public SootClass generateJoinPointImpl(SootClass var1);
+    /**
+     * Generate a custom JoinPoint implementation class
+     *
+     * @param abstractClass An abstract class that requires a concrete implementation class
+     * @return Implementation class of the generated JoinPoint
+     */
+    SootClass generateJoinPointImpl(SootClass abstractClass);
 
-    public SootClass generateMapperImpl(SootClass var1);
+    /**
+     * Generate a custom Mapper implementation class
+     *
+     * @param interfaceClass Need to concretely implement the interface of the class
+     * @return Implementation class of the generated Mapper
+     */
+    SootClass generateMapperImpl(SootClass interfaceClass);
 
-    public SootClass generateProxy(SootClass var1);
+    /**
+     * Simulate Spring AOP mechanism to generate proxy for each target class
+     *
+     * @param sootClass The target class or interface that needs to generate the proxy
+     * @return proxy class
+     */
+    SootClass generateProxy(SootClass sootClass);
 
-    public void generateSingletonBeanFactory(Set<SootClass> var1, Map<String, List<ConstructorArgBean>> var2);
+    /**
+     * Simulate a singleton factory in Spring
+     *
+     * @param beans the bean that need to generate with singleton
+     */
+    void generateSingletonBeanFactory(Set<SootClass> beans, Map<String, List<ConstructorArgBean>> collect);
 
-    public SootClass generateHttpServlet(SootClass var1);
+    /**
+     * Simulate the implementation of HttpServlet
+     * @param abstractClass The target class or interface that needs to generate the proxy
+     * @return HttpServlet implementation class
+     */
+    SootClass generateHttpServlet(SootClass abstractClass);
 }
-

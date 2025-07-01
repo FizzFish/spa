@@ -1,27 +1,26 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  bean.AspectModel
- *  enums.AdviceEnum
- *  soot.SootClass
- *  soot.SootMethod
- */
-package bean;
+package jasmine.bean;
 
-import enums.AdviceEnum;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import jasmine.enums.AdviceEnum;
 import soot.SootClass;
 import soot.SootMethod;
 
-public class AspectModel
-implements Comparable<AspectModel> {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * entity class which contains to advices
+ */
+public class AspectModel implements Comparable<AspectModel> {
+    // The aspect of advice
     private SootClass sootClass;
+    // @Order value
     private int order;
-    private List<String> pointcutExpressions = new ArrayList();
+    // pointcut expression
+    private List<String> pointcutExpressions = new ArrayList<>();
+    // advice
     private SootMethod sootMethod;
+    // the type of advice(@Around, @Before, @After)
     private AdviceEnum annotation;
 
     public AspectModel(SootClass sootClass, int order) {
@@ -39,7 +38,7 @@ implements Comparable<AspectModel> {
     }
 
     public SootClass getSootClass() {
-        return this.sootClass;
+        return sootClass;
     }
 
     public void setSootClass(SootClass sootClass) {
@@ -47,7 +46,7 @@ implements Comparable<AspectModel> {
     }
 
     public int getOrder() {
-        return this.order;
+        return order;
     }
 
     public void setOrder(int order) {
@@ -58,16 +57,21 @@ implements Comparable<AspectModel> {
         this.pointcutExpressions = pointcutExpressions;
     }
 
+    /**
+     * add pointcut expression
+     *
+     * @param pointcutExpression pointcut expression
+     */
     public void addPointcutExpressions(String pointcutExpression) {
         this.pointcutExpressions.add(pointcutExpression);
     }
 
     public List<String> getPointcutExpressions() {
-        return this.pointcutExpressions;
+        return pointcutExpressions;
     }
 
     public SootMethod getSootMethod() {
-        return this.sootMethod;
+        return sootMethod;
     }
 
     public void setSootMethod(SootMethod sootMethod) {
@@ -75,47 +79,61 @@ implements Comparable<AspectModel> {
     }
 
     public AdviceEnum getAnnotation() {
-        return this.annotation;
+        return annotation;
     }
 
     public void setAnnotation(AdviceEnum annotation) {
         this.annotation = annotation;
     }
 
+    /**
+     * According to the order value, sort from largest to smallest. The smaller
+     * the order value, the higher the priority. If the order is the same, it
+     * will be sorted by name, and then sorted by advice type.
+     *
+     * @param o Priority comparison object
+     * @return
+     */
     @Override
     public int compareTo(AspectModel o) {
         if (o.order - this.order > 0) {
             return -1;
-        }
-        if (o.order - this.order < 0) {
+        } else if (o.order - this.order < 0) {
             return 1;
-        }
-        if (this.getSootClass().getName().compareTo(o.getSootClass().getName()) > 0) {
+        } else if (this.getSootClass().getName().compareTo(o.getSootClass().getName()) > 0) {
             return 1;
-        }
-        if (this.getSootClass().getName().compareTo(o.getSootClass().getName()) < 0) {
+        } else if (this.getSootClass().getName().compareTo(o.getSootClass().getName()) < 0) {
             return -1;
+        } else {
+            return this.getAnnotation().ordinal() - o.getAnnotation().ordinal();
         }
-        return this.getAnnotation().ordinal() - o.getAnnotation().ordinal();
     }
 
+    @Override
     public String toString() {
-        return "AspectModel{sootClass=" + this.sootClass + ", order=" + this.order + ", pointcutExpression='" + this.pointcutExpressions + '\'' + ", sootMethod=" + this.sootMethod + ", annotation='" + this.annotation + '\'' + '}';
+        return "AspectModel{" +
+                "sootClass=" + sootClass +
+                ", order=" + order +
+                ", pointcutExpression='" + pointcutExpressions + '\'' +
+                ", sootMethod=" + sootMethod +
+                ", annotation='" + annotation + '\'' +
+                '}';
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || this.getClass() != o.getClass()) {
-            return false;
-        }
-        AspectModel that = (AspectModel)o;
-        return this.order == that.order && Objects.equals(this.sootClass, that.sootClass) && Objects.equals(this.pointcutExpressions, that.pointcutExpressions) && Objects.equals(this.sootMethod, that.sootMethod) && this.annotation == that.annotation;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AspectModel that = (AspectModel) o;
+        return order == that.order &&
+                Objects.equals(sootClass, that.sootClass) &&
+                Objects.equals(pointcutExpressions, that.pointcutExpressions) &&
+                Objects.equals(sootMethod, that.sootMethod) &&
+                annotation == that.annotation;
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hash(this.sootClass, this.order, this.pointcutExpressions, this.sootMethod, this.annotation);
+        return Objects.hash(sootClass, order, pointcutExpressions, sootMethod, annotation);
     }
 }
-

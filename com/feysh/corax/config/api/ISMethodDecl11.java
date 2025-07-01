@@ -1,18 +1,3 @@
-/*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  kotlin.Metadata
- *  kotlin.Unit
- *  kotlin.jvm.functions.Function1
- *  kotlin.jvm.functions.Function12
- *  kotlin.jvm.internal.Intrinsics
- *  kotlin.jvm.internal.SourceDebugExtension
- *  kotlin.reflect.KClass
- *  org.jetbrains.annotations.NotNull
- *  org.jetbrains.annotations.Nullable
- *  soot.SootField
- */
 package com.feysh.corax.config.api;
 
 import com.feysh.corax.config.api.BugMessage;
@@ -31,308 +16,81 @@ import com.feysh.corax.config.api.MethodConfig;
 import com.feysh.corax.config.api.TaintProperty;
 import com.feysh.corax.config.api.ViaProperty;
 import com.feysh.corax.config.api.utils.KFunctionType;
-import java.util.Set;
-import kotlin.Metadata;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-import kotlin.jvm.functions.Function12;
-import kotlin.jvm.internal.Intrinsics;
-import kotlin.jvm.internal.SourceDebugExtension;
-import kotlin.reflect.KClass;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import soot.SootField;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-@Metadata(mv={2, 0, 0}, k=1, xi=48, d1={"\u0000<\n\u0002\u0018\u0002\n\u0002\b\f\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\u0010\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0002\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0003\bf\u0018\u0000*\u0004\b\u0000\u0010\u0001*\u0004\b\u0001\u0010\u0002*\u0004\b\u0002\u0010\u0003*\u0004\b\u0003\u0010\u0004*\u0004\b\u0004\u0010\u0005*\u0004\b\u0005\u0010\u0006*\u0004\b\u0006\u0010\u0007*\u0004\b\u0007\u0010\b*\u0004\b\b\u0010\t*\u0004\b\t\u0010\n*\u0004\b\n\u0010\u000b*\u0004\b\u000b\u0010\f2\b\u0012\u0004\u0012\u0002H\u00010\r:\u0001\u001cJq\u0010\u000e\u001aJ\u0012\u0004\u0012\u00028\u0000\u0012\u0004\u0012\u00028\u0001\u0012\u0004\u0012\u00028\u0002\u0012\u0004\u0012\u00028\u0003\u0012\u0004\u0012\u00028\u0004\u0012\u0004\u0012\u00028\u0005\u0012\u0004\u0012\u00028\u0006\u0012\u0004\u0012\u00028\u0007\u0012\u0004\u0012\u00028\b\u0012\u0004\u0012\u00028\t\u0012\u0004\u0012\u00028\n\u0012\u0004\u0012\u00028\u000b0\u000f2\u001f\u0010\u0010\u001a\u001b\u0012\b\u0012\u00060\u0012j\u0002`\u0013\u0012\u0004\u0012\u00020\u00140\u0011j\u0002`\u0016\u00a2\u0006\u0002\b\u0015H&J\u00da\u0002\u0010\u0017\u001aJ\u0012\u0004\u0012\u00028\u0000\u0012\u0004\u0012\u00028\u0001\u0012\u0004\u0012\u00028\u0002\u0012\u0004\u0012\u00028\u0003\u0012\u0004\u0012\u00028\u0004\u0012\u0004\u0012\u00028\u0005\u0012\u0004\u0012\u00028\u0006\u0012\u0004\u0012\u00028\u0007\u0012\u0004\u0012\u00028\b\u0012\u0004\u0012\u00028\t\u0012\u0004\u0012\u00028\n\u0012\u0004\u0012\u00028\u000b0\u00002!\b\u0002\u0010\u0010\u001a\u001b\u0012\b\u0012\u00060\u0012j\u0002`\u0013\u0012\u0004\u0012\u00020\u00140\u0011j\u0002`\u0016\u00a2\u0006\u0002\b\u00152\u00e4\u0001\u0010\u0018\u001a\u00df\u0001\u0012L\u0012J\u0012\u0004\u0012\u00028\u0000\u0012\u0004\u0012\u00028\u0001\u0012\u0004\u0012\u00028\u0002\u0012\u0004\u0012\u00028\u0003\u0012\u0004\u0012\u00028\u0004\u0012\u0004\u0012\u00028\u0005\u0012\u0004\u0012\u00028\u0006\u0012\u0004\u0012\u00028\u0007\u0012\u0004\u0012\u00028\b\u0012\u0004\u0012\u00028\t\u0012\u0004\u0012\u00028\n\u0012\u0004\u0012\u00028\u000b0\u000f\u0012\n\u0012\b\u0012\u0004\u0012\u00028\u00010\u001a\u0012\n\u0012\b\u0012\u0004\u0012\u00028\u00020\u001a\u0012\n\u0012\b\u0012\u0004\u0012\u00028\u00030\u001a\u0012\n\u0012\b\u0012\u0004\u0012\u00028\u00040\u001a\u0012\n\u0012\b\u0012\u0004\u0012\u00028\u00050\u001a\u0012\n\u0012\b\u0012\u0004\u0012\u00028\u00060\u001a\u0012\n\u0012\b\u0012\u0004\u0012\u00028\u00070\u001a\u0012\n\u0012\b\u0012\u0004\u0012\u00028\b0\u001a\u0012\n\u0012\b\u0012\u0004\u0012\u00028\t0\u001a\u0012\n\u0012\b\u0012\u0004\u0012\u00028\n0\u001a\u0012\n\u0012\b\u0012\u0004\u0012\u00028\u000b0\u001a\u0012\u0004\u0012\u00020\u00140\u0019\u00a2\u0006\u0002\b\u0015H\u0016J\u00d4\u0001\u0010\u001b\u001aJ\u0012\u0004\u0012\u00028\u0000\u0012\u0004\u0012\u00028\u0001\u0012\u0004\u0012\u00028\u0002\u0012\u0004\u0012\u00028\u0003\u0012\u0004\u0012\u00028\u0004\u0012\u0004\u0012\u00028\u0005\u0012\u0004\u0012\u00028\u0006\u0012\u0004\u0012\u00028\u0007\u0012\u0004\u0012\u00028\b\u0012\u0004\u0012\u00028\t\u0012\u0004\u0012\u00028\n\u0012\u0004\u0012\u00028\u000b0\u00002!\b\u0002\u0010\u0010\u001a\u001b\u0012\b\u0012\u00060\u0012j\u0002`\u0013\u0012\u0004\u0012\u00020\u00140\u0011j\u0002`\u0016\u00a2\u0006\u0002\b\u00152_\u0010\u0018\u001a[\u0012L\u0012J\u0012\u0004\u0012\u00028\u0000\u0012\u0004\u0012\u00028\u0001\u0012\u0004\u0012\u00028\u0002\u0012\u0004\u0012\u00028\u0003\u0012\u0004\u0012\u00028\u0004\u0012\u0004\u0012\u00028\u0005\u0012\u0004\u0012\u00028\u0006\u0012\u0004\u0012\u00028\u0007\u0012\u0004\u0012\u00028\b\u0012\u0004\u0012\u00028\t\u0012\u0004\u0012\u00028\n\u0012\u0004\u0012\u00028\u000b0\u000f\u0012\u0004\u0012\u00020\u00140\u0011\u00a2\u0006\u0002\b\u0015H\u0016\u00a8\u0006\u001d"}, d2={"Lcom/feysh/corax/config/api/ISMethodDecl11;", "R", "P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "Lcom/feysh/corax/config/api/ISMethodDecl;", "checkBuilder", "Lcom/feysh/corax/config/api/ISMethodDecl11$CheckBuilder;", "config", "Lkotlin/Function1;", "Lcom/feysh/corax/config/api/MethodConfig;", "Lcom/feysh/corax/config/api/MethodConfigType;", "", "Lkotlin/ExtensionFunctionType;", "Lcom/feysh/corax/config/api/MethodConfigBlockType;", "model", "block", "Lkotlin/Function12;", "Lcom/feysh/corax/config/api/IParameterT;", "modelNoArg", "CheckBuilder", "corax-config-api"})
-public interface ISMethodDecl11<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10>
-extends ISMethodDecl<R> {
-    @NotNull
-    public CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> checkBuilder(@NotNull Function1<? super MethodConfig, Unit> var1);
-
-    @NotNull
-    public ISMethodDecl11<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> model(@NotNull Function1<? super MethodConfig, Unit> var1, @NotNull Function12<? super CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10>, ? super IParameterT<P0>, ? super IParameterT<P1>, ? super IParameterT<P2>, ? super IParameterT<P3>, ? super IParameterT<P4>, ? super IParameterT<P5>, ? super IParameterT<P6>, ? super IParameterT<P7>, ? super IParameterT<P8>, ? super IParameterT<P9>, ? super IParameterT<P10>, Unit> var2);
+public interface ISMethodDecl11<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> extends ISMethodDecl<R> {
 
     @NotNull
-    public ISMethodDecl11<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> modelNoArg(@NotNull Function1<? super MethodConfig, Unit> var1, @NotNull Function1<? super CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10>, Unit> var2);
+    CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> checkBuilder(@NotNull Consumer<MethodConfig> config);
 
-    @Metadata(mv={2, 0, 0}, k=1, xi=48, d1={"\u0000\u001e\n\u0002\u0018\u0002\n\u0002\b\f\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0018\u0002\n\u0002\b\u0017\bf\u0018\u0000*\u0004\b\f\u0010\u0001*\u0004\b\r\u0010\u0002*\u0004\b\u000e\u0010\u0003*\u0004\b\u000f\u0010\u0004*\u0004\b\u0010\u0010\u0005*\u0004\b\u0011\u0010\u0006*\u0004\b\u0012\u0010\u0007*\u0004\b\u0013\u0010\b*\u0004\b\u0014\u0010\t*\u0004\b\u0015\u0010\n*\u0004\b\u0016\u0010\u000b*\u0004\b\u0017\u0010\f2\b\u0012\u0004\u0012\u0002H\u00010\rRZ\u0010\u000e\u001aJ\u0012\u0004\u0012\u00028\f\u0012\u0004\u0012\u00028\r\u0012\u0004\u0012\u00028\u000e\u0012\u0004\u0012\u00028\u000f\u0012\u0004\u0012\u00028\u0010\u0012\u0004\u0012\u00028\u0011\u0012\u0004\u0012\u00028\u0012\u0012\u0004\u0012\u00028\u0013\u0012\u0004\u0012\u00028\u0014\u0012\u0004\u0012\u00028\u0015\u0012\u0004\u0012\u00028\u0016\u0012\u0004\u0012\u00028\u00170\u000fX\u00a6\u0004\u00a2\u0006\u0006\u001a\u0004\b\u0010\u0010\u0011R\u001a\u0010\u0012\u001a\b\u0012\u0004\u0012\u00028\r0\u00138VX\u0096\u0004\u00a2\u0006\u0006\u001a\u0004\b\u0014\u0010\u0015R\u001a\u0010\u0016\u001a\b\u0012\u0004\u0012\u00028\u000e0\u00138VX\u0096\u0004\u00a2\u0006\u0006\u001a\u0004\b\u0017\u0010\u0015R\u001a\u0010\u0018\u001a\b\u0012\u0004\u0012\u00028\u000f0\u00138VX\u0096\u0004\u00a2\u0006\u0006\u001a\u0004\b\u0019\u0010\u0015R\u001a\u0010\u001a\u001a\b\u0012\u0004\u0012\u00028\u00100\u00138VX\u0096\u0004\u00a2\u0006\u0006\u001a\u0004\b\u001b\u0010\u0015R\u001a\u0010\u001c\u001a\b\u0012\u0004\u0012\u00028\u00110\u00138VX\u0096\u0004\u00a2\u0006\u0006\u001a\u0004\b\u001d\u0010\u0015R\u001a\u0010\u001e\u001a\b\u0012\u0004\u0012\u00028\u00120\u00138VX\u0096\u0004\u00a2\u0006\u0006\u001a\u0004\b\u001f\u0010\u0015R\u001a\u0010 \u001a\b\u0012\u0004\u0012\u00028\u00130\u00138VX\u0096\u0004\u00a2\u0006\u0006\u001a\u0004\b!\u0010\u0015R\u001a\u0010\"\u001a\b\u0012\u0004\u0012\u00028\u00140\u00138VX\u0096\u0004\u00a2\u0006\u0006\u001a\u0004\b#\u0010\u0015R\u001a\u0010$\u001a\b\u0012\u0004\u0012\u00028\u00150\u00138VX\u0096\u0004\u00a2\u0006\u0006\u001a\u0004\b%\u0010\u0015R\u001a\u0010&\u001a\b\u0012\u0004\u0012\u00028\u00160\u00138VX\u0096\u0004\u00a2\u0006\u0006\u001a\u0004\b'\u0010\u0015R\u001a\u0010(\u001a\b\u0012\u0004\u0012\u00028\u00170\u00138VX\u0096\u0004\u00a2\u0006\u0006\u001a\u0004\b)\u0010\u0015\u00a8\u0006*"}, d2={"Lcom/feysh/corax/config/api/ISMethodDecl11$CheckBuilder;", "R", "P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "Lcom/feysh/corax/config/api/ISMethodDecl$CheckBuilder;", "method", "Lcom/feysh/corax/config/api/ISMethodDecl11;", "getMethod", "()Lcom/feysh/corax/config/api/ISMethodDecl11;", "p0", "Lcom/feysh/corax/config/api/IParameterT;", "getP0", "()Lcom/feysh/corax/config/api/IParameterT;", "p1", "getP1", "p2", "getP2", "p3", "getP3", "p4", "getP4", "p5", "getP5", "p6", "getP6", "p7", "getP7", "p8", "getP8", "p9", "getP9", "p10", "getP10", "corax-config-api"})
-    public static interface CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10>
-    extends ISMethodDecl.CheckBuilder<R> {
-        @NotNull
-        public ISMethodDecl11<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> getMethod();
-
-        @NotNull
-        public IParameterT<P0> getP0();
-
-        @NotNull
-        public IParameterT<P1> getP1();
-
-        @NotNull
-        public IParameterT<P2> getP2();
-
-        @NotNull
-        public IParameterT<P3> getP3();
-
-        @NotNull
-        public IParameterT<P4> getP4();
-
-        @NotNull
-        public IParameterT<P5> getP5();
-
-        @NotNull
-        public IParameterT<P6> getP6();
-
-        @NotNull
-        public IParameterT<P7> getP7();
-
-        @NotNull
-        public IParameterT<P8> getP8();
-
-        @NotNull
-        public IParameterT<P9> getP9();
-
-        @NotNull
-        public IParameterT<P10> getP10();
-
-        @Metadata(mv={2, 0, 0}, k=3, xi=48)
-        public static final class DefaultImpls {
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IParameterT<P0> getP0(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this) {
-                return $this.paramAt(0);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IParameterT<P1> getP1(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this) {
-                return $this.paramAt(1);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IParameterT<P2> getP2(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this) {
-                return $this.paramAt(2);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IParameterT<P3> getP3(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this) {
-                return $this.paramAt(3);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IParameterT<P4> getP4(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this) {
-                return $this.paramAt(4);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IParameterT<P5> getP5(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this) {
-                return $this.paramAt(5);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IParameterT<P6> getP6(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this) {
-                return $this.paramAt(6);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IParameterT<P7> getP7(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this) {
-                return $this.paramAt(7);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IParameterT<P8> getP8(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this) {
-                return $this.paramAt(8);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IParameterT<P9> getP9(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this) {
-                return $this.paramAt(9);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IParameterT<P10> getP10(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this) {
-                return $this.paramAt(10);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IAttribute<TaintProperty, Set<ITaintType>> plus(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, @NotNull IAttribute<TaintProperty, Set<ITaintType>> $receiver, @NotNull ITaintType single) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)single, (String)"single");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.plus((ISMethodDecl.CheckBuilder)$this, $receiver, single);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IAttribute<ViaProperty, Set<IViaType>> plus(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, @NotNull IAttribute<ViaProperty, Set<IViaType>> $receiver, @NotNull IViaType single) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)single, (String)"single");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.plus((ISMethodDecl.CheckBuilder)$this, $receiver, single);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IAttribute<TaintProperty, Set<ITaintType>> minus(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, @NotNull IAttribute<TaintProperty, Set<ITaintType>> $receiver, @NotNull ITaintType single) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)single, (String)"single");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.minus((ISMethodDecl.CheckBuilder)$this, $receiver, single);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IAttribute<ViaProperty, Set<IViaType>> minus(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, @NotNull IAttribute<ViaProperty, Set<IViaType>> $receiver, @NotNull IViaType single) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)single, (String)"single");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.minus((ISMethodDecl.CheckBuilder)$this, $receiver, single);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IBoolExpr startsWith(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, @NotNull IStringExpr $receiver, @NotNull String str) {
-                Intrinsics.checkNotNullParameter((Object)$receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)str, (String)"str");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.startsWith($this, $receiver, str);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IBoolExpr endsWith(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, @NotNull IStringExpr $receiver, @NotNull String str) {
-                Intrinsics.checkNotNullParameter((Object)$receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)str, (String)"str");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.endsWith($this, $receiver, str);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IBoolExpr contains(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, @NotNull IStringExpr $receiver, @NotNull String str) {
-                Intrinsics.checkNotNullParameter((Object)$receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)str, (String)"str");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.contains($this, $receiver, str);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IBoolExpr stringEquals(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, @NotNull IStringExpr $receiver, @NotNull String str) {
-                Intrinsics.checkNotNullParameter((Object)$receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)str, (String)"str");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.stringEquals($this, $receiver, str);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IAttribute<TaintProperty, Set<ITaintType>> taintOf(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, ITaintType ... type) {
-                Intrinsics.checkNotNullParameter((Object)type, (String)"type");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.taintOf($this, type);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IAttribute<TaintProperty, Set<ITaintType>> getEmptyTaint(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this) {
-                return ISMethodDecl.CheckBuilder.DefaultImpls.getEmptyTaint($this);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IAttribute<ViaProperty, Set<IViaType>> getEmptyVia(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this) {
-                return ISMethodDecl.CheckBuilder.DefaultImpls.getEmptyVia($this);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> IBoolExpr containsAll(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, @NotNull IAttribute<TaintProperty, Set<ITaintType>> $receiver, @NotNull ITaintType taint) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)taint, (String)"taint");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.containsAll($this, $receiver, taint);
-            }
-
-            @NotNull
-            public static <R_I1, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, T1 extends R, T2 extends R, R> ILocalValue<R> anyOr(@NotNull CheckBuilder<R_I1, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, @NotNull ILocalT<T1> $receiver, @NotNull ILocalT<T2> second) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter(second, (String)"second");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.anyOr((ISMethodDecl.CheckBuilder)$this, $receiver, second);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, T> IAccessPathT<Object> field(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, @NotNull ILocalT<T> $receiver, @NotNull SootField field) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)field, (String)"field");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.field($this, $receiver, field);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, T, FieldType> IAccessPathT<FieldType> field(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, @NotNull ILocalT<T> $receiver, @Nullable KClass<?> declaringClass, @NotNull String fieldName, @NotNull KClass<FieldType> type) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter((Object)fieldName, (String)"fieldName");
-                Intrinsics.checkNotNullParameter(type, (String)"type");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.field((ISMethodDecl.CheckBuilder)$this, $receiver, declaringClass, fieldName, type);
-            }
-
-            @NotNull
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, T> IAccessPathT<Object> field(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, @NotNull ILocalT<T> $receiver, @NotNull KClass<?> declaringClass, @NotNull String fieldName, @Nullable String fieldType) {
-                Intrinsics.checkNotNullParameter($receiver, (String)"$receiver");
-                Intrinsics.checkNotNullParameter(declaringClass, (String)"declaringClass");
-                Intrinsics.checkNotNullParameter((Object)fieldName, (String)"fieldName");
-                return ISMethodDecl.CheckBuilder.DefaultImpls.field((ISMethodDecl.CheckBuilder)$this, $receiver, declaringClass, fieldName, fieldType);
-            }
-
-            public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> void check(@NotNull CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, @NotNull ILocalT<Boolean> expr, @NotNull CheckType checkType, @NotNull Function1<? super BugMessage.Env, Unit> env) {
-                Intrinsics.checkNotNullParameter(expr, (String)"expr");
-                Intrinsics.checkNotNullParameter((Object)checkType, (String)"checkType");
-                Intrinsics.checkNotNullParameter(env, (String)"env");
-                ISMethodDecl.CheckBuilder.DefaultImpls.check($this, expr, checkType, env);
-            }
-        }
+    @NotNull
+    default ISMethodDecl11<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> model(
+            @NotNull Consumer<MethodConfig> config,
+            @NotNull Function12<CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10>, 
+                              IParameterT<P0>, IParameterT<P1>, IParameterT<P2>, IParameterT<P3>, 
+                              IParameterT<P4>, IParameterT<P5>, IParameterT<P6>, IParameterT<P7>, 
+                              IParameterT<P8>, IParameterT<P9>, IParameterT<P10>, Unit> block) {
+        CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> builder = checkBuilder(config);
+        block.apply(builder, builder.getP0(), builder.getP1(), builder.getP2(), builder.getP3(), 
+                   builder.getP4(), builder.getP5(), builder.getP6(), builder.getP7(), 
+                   builder.getP8(), builder.getP9(), builder.getP10());
+        return this;
     }
 
-    @Metadata(mv={2, 0, 0}, k=3, xi=48)
-    @SourceDebugExtension(value={"SMAP\nStaticMethodInterface.kt\nKotlin\n*S Kotlin\n*F\n+ 1 StaticMethodInterface.kt\ncom/feysh/corax/config/api/ISMethodDecl11$DefaultImpls\n+ 2 fake.kt\nkotlin/jvm/internal/FakeKt\n*L\n1#1,577:1\n1#2:578\n*E\n"})
-    public static final class DefaultImpls {
-        @NotNull
-        public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> ISMethodDecl11<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> model(@NotNull ISMethodDecl11<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, @NotNull Function1<? super MethodConfig, Unit> config, @NotNull Function12<? super CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10>, ? super IParameterT<P0>, ? super IParameterT<P1>, ? super IParameterT<P2>, ? super IParameterT<P3>, ? super IParameterT<P4>, ? super IParameterT<P5>, ? super IParameterT<P6>, ? super IParameterT<P7>, ? super IParameterT<P8>, ? super IParameterT<P9>, ? super IParameterT<P10>, Unit> block) {
-            CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> checkBuilder2;
-            Intrinsics.checkNotNullParameter(config, (String)"config");
-            Intrinsics.checkNotNullParameter(block, (String)"block");
-            CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this$model_u24lambda_u241 = checkBuilder2 = $this.checkBuilder(config);
-            boolean bl = false;
-            block.invoke($this$model_u24lambda_u241, $this$model_u24lambda_u241.getP0(), $this$model_u24lambda_u241.getP1(), $this$model_u24lambda_u241.getP2(), $this$model_u24lambda_u241.getP3(), $this$model_u24lambda_u241.getP4(), $this$model_u24lambda_u241.getP5(), $this$model_u24lambda_u241.getP6(), $this$model_u24lambda_u241.getP7(), $this$model_u24lambda_u241.getP8(), $this$model_u24lambda_u241.getP9(), $this$model_u24lambda_u241.getP10());
-            return $this;
-        }
+    @NotNull
+    default ISMethodDecl11<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> modelNoArg(
+            @NotNull Consumer<MethodConfig> config,
+            @NotNull Consumer<CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10>> block) {
+        CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> builder = checkBuilder(config);
+        block.accept(builder);
+        return this;
+    }
 
-        public static /* synthetic */ ISMethodDecl11 model$default(ISMethodDecl11 iSMethodDecl11, Function1 function1, Function12 function12, int n, Object object) {
-            if (object != null) {
-                throw new UnsupportedOperationException("Super calls with default arguments not supported in this target, function: model");
-            }
-            if ((n & 1) != 0) {
-                function1 = DefaultImpls::model$lambda$0;
-            }
-            return iSMethodDecl11.model((Function1<MethodConfig, Unit>)function1, function12);
-        }
+    interface CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> extends ISMethodDecl.CheckBuilder<R> {
+        @NotNull
+        ISMethodDecl11<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> getMethod();
 
         @NotNull
-        public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> ISMethodDecl11<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> modelNoArg(@NotNull ISMethodDecl11<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this, @NotNull Function1<? super MethodConfig, Unit> config, @NotNull Function1<? super CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10>, Unit> block) {
-            CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> checkBuilder2;
-            Intrinsics.checkNotNullParameter(config, (String)"config");
-            Intrinsics.checkNotNullParameter(block, (String)"block");
-            CheckBuilder<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this$modelNoArg_u24lambda_u243 = checkBuilder2 = $this.checkBuilder(config);
-            boolean bl = false;
-            block.invoke($this$modelNoArg_u24lambda_u243);
-            return $this;
-        }
+        IParameterT<P0> getP0();
 
-        public static /* synthetic */ ISMethodDecl11 modelNoArg$default(ISMethodDecl11 iSMethodDecl11, Function1 function1, Function1 function12, int n, Object object) {
-            if (object != null) {
-                throw new UnsupportedOperationException("Super calls with default arguments not supported in this target, function: modelNoArg");
-            }
-            if ((n & 1) != 0) {
-                function1 = DefaultImpls::modelNoArg$lambda$2;
-            }
-            return iSMethodDecl11.modelNoArg((Function1<MethodConfig, Unit>)function1, function12);
-        }
+        @NotNull
+        IParameterT<P1> getP1();
 
-        @Nullable
-        public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> Integer getArgumentCnt(@NotNull ISMethodDecl11<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this) {
-            return ISMethodDecl.DefaultImpls.getArgumentCnt($this);
-        }
+        @NotNull
+        IParameterT<P2> getP2();
 
-        @Nullable
-        public static <R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> KFunctionType getActualType(@NotNull ISMethodDecl11<R, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10> $this) {
-            return ISMethodDecl.DefaultImpls.getActualType($this);
-        }
+        @NotNull
+        IParameterT<P3> getP3();
 
-        private static Unit model$lambda$0(MethodConfig methodConfig) {
-            Intrinsics.checkNotNullParameter((Object)methodConfig, (String)"<this>");
-            return Unit.INSTANCE;
-        }
+        @NotNull
+        IParameterT<P4> getP4();
 
-        private static Unit modelNoArg$lambda$2(MethodConfig methodConfig) {
-            Intrinsics.checkNotNullParameter((Object)methodConfig, (String)"<this>");
-            return Unit.INSTANCE;
-        }
+        @NotNull
+        IParameterT<P5> getP5();
+
+        @NotNull
+        IParameterT<P6> getP6();
+
+        @NotNull
+        IParameterT<P7> getP7();
+
+        @NotNull
+        IParameterT<P8> getP8();
+
+        @NotNull
+        IParameterT<P9> getP9();
+
+        @NotNull
+        IParameterT<P10> getP10();
+    }
+
+    @FunctionalInterface
+    interface Function12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R> {
+        R apply(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12);
     }
 }
-

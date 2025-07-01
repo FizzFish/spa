@@ -1,89 +1,93 @@
 /*
- * Decompiled with CFR 0.152.
- * 
- * Could not load the following classes:
- *  cn.sast.framework.report.coverage.InstructionsBuilder
- *  cn.sast.framework.report.coverage.InstructionsBuilder$Jump
- *  org.jacoco.core.internal.analysis.Instruction
- *  org.jacoco.core.internal.flow.LabelInfo
- *  org.objectweb.asm.Label
- *  org.objectweb.asm.tree.AbstractInsnNode
+ * Copyright (c) 2022, SAP SE or an SAP affiliate company. All rights reserved.
  */
 package cn.sast.framework.report.coverage;
 
-import cn.sast.framework.report.coverage.InstructionsBuilder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.jacoco.core.internal.analysis.Instruction;
 import org.jacoco.core.internal.flow.LabelInfo;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.tree.AbstractInsnNode;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class InstructionsBuilder {
     private final boolean[] probes;
-    private int currentLine;
-    public Instruction currentInsn;
-    private final Map<AbstractInsnNode, Instruction> instructions;
-    private final List<Label> currentLabel;
-    private final List<Jump> jumps;
+    private int currentLine = -1;
+    private Instruction currentInsn;
+    private final Map<AbstractInsnNode, Instruction> instructions = new HashMap<>();
+    private final List<Label> currentLabel = new ArrayList<>(2);
+    private final List<Jump> jumps = new ArrayList<>();
 
-    InstructionsBuilder(boolean[] probes) {
+    public InstructionsBuilder(boolean[] probes) {
         this.probes = probes;
-        this.currentLine = -1;
-        this.currentInsn = null;
-        this.instructions = new HashMap();
-        this.currentLabel = new ArrayList(2);
-        this.jumps = new ArrayList();
     }
 
-    void setCurrentLine(int line) {
+    public void setCurrentLine(int line) {
         this.currentLine = line;
     }
 
-    void addLabel(Label label) {
-        this.currentLabel.add(label);
-        if (!LabelInfo.isSuccessor((Label)label)) {
-            this.noSuccessor();
+    public void addLabel(Label label) {
+        currentLabel.add(label);
+        if (!LabelInfo.isSuccessor(label)) {
+            noSuccessor();
         }
     }
 
-    void addInstruction(AbstractInsnNode node) {
-        Instruction insn = new Instruction(this.currentLine);
-        int labelCount = this.currentLabel.size();
-        if (labelCount > 0) {
-            int i = labelCount;
-            while (--i >= 0) {
-                LabelInfo.setInstruction((Label)((Label)this.currentLabel.get(i)), (Instruction)insn);
+    public void addInstruction(AbstractInsnNode node) {
+        Instruction insn = new Instruction(currentLine);
+        
+        if (!currentLabel.isEmpty()) {
+            for (int i = currentLabel.size() - 1; i >= 0; i--) {
+                LabelInfo.setInstruction(currentLabel.get(i), insn);
             }
-            this.currentLabel.clear();
+            currentLabel.clear();
         }
-        if (this.currentInsn != null) {
-            this.currentInsn.addBranch(insn, 0);
+
+        if (currentInsn != null) {
+            currentInsn.addBranch(insn, 0);
         }
-        this.currentInsn = insn;
-        this.instructions.put(node, insn);
+        
+        currentInsn = insn;
+        instructions.put(node, insn);
     }
 
-    void noSuccessor() {
-        this.currentInsn = null;
+    public void noSuccessor() {
+        currentInsn = null;
     }
 
-    void addJump(Label target, int branch) {
-        this.jumps.add(new Jump(this.currentInsn, target, branch));
+    public void addJump(Label target, int branch) {
+        jumps.add(new Jump(currentInsn, target, branch));
     }
 
-    void addProbe(int probeId, int branch) {
-        boolean executed = this.probes != null && this.probes[probeId];
-        this.currentInsn.addBranch(executed, branch);
+    public void addProbe(int probeId, int branch) {
+        boolean executed = probes != null && probes[probeId];
+        currentInsn.addBranch(executed, branch);
     }
 
-    Map<AbstractInsnNode, Instruction> getInstructions() {
-        for (Jump j : this.jumps) {
-            j.wire();
+    public Map<AbstractInsnNode, Instruction> getInstructions() {
+        jumps.forEach(Jump::wire);
+        return instructions;
+    }
+
+    public static final class Jump {
+        private final Instruction source;
+        private final Label target;
+        private final int branch;
+
+        public Jump(Instruction source, Label target, int branch) {
+            this.source = source;
+            this.target = target;
+            this.branch = branch;
         }
-        return this.instructions;
+
+        public void wire() {
+            Instruction targetInsn = LabelInfo.getInstruction(target);
+            if (source != null && targetInsn != null) {
+                source.addBranch(targetInsn, branch);
+            }
+        }
     }
 }
-
